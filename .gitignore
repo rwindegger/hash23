@@ -1,0 +1,8 @@
+/cmake-build-debug-wsl/
+/cmake-build-debug-visual-studio/
+/.idea/
+/build/
+/.vs/
+/out/
+/cmake-build-debug-wsl-coverage/
+CMakeUserPresets.json

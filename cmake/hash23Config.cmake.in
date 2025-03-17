@@ -1,0 +1,8 @@
+get_filename_component(hash23_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+if(NOT TARGET hash23)
+    include("${hash23_CMAKE_DIR}/hash23Targets.cmake")
+endif()
+
+set(hash23_LIBRARIES hash23)
