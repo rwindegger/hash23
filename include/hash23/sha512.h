@@ -4,12 +4,11 @@
 
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <climits>
 #include <cstddef>
 #include <cstdint>
-#include <cstring>
-#include <bits/ranges_algo.h>
 
 namespace hash23 {
     class sha512 {
@@ -84,7 +83,7 @@ namespace hash23 {
             return rotate_right(value, 19) ^ rotate_right(value, 61) ^ shift_right(value, 6);
         }
 
-        void transform() {
+        constexpr void transform() {
             constexpr auto to_big_endian = [](auto const *b) {
                 if constexpr (std::endian::native == std::endian::big) {
                     return static_cast<uint64_t>(*((b) + 0)) | static_cast<uint64_t>(*((b) + 1)) << 8 |
@@ -125,10 +124,10 @@ namespace hash23 {
             }
         }
 
-        void update(std::span<std::uint8_t const> const data) {
+        constexpr void update(std::span<std::uint8_t const> const data) {
             std::size_t const remaining = buffer_.size() - buffer_size_;
             std::size_t const copy_bytes = std::min(data.size(), remaining);
-            std::memcpy(buffer_.data() + buffer_size_, data.data(), copy_bytes);
+            std::copy_n(data.begin(), copy_bytes, buffer_.data() + buffer_size_);
             buffer_size_ += copy_bytes;
 
             if (buffer_size_ < buffer_.size())
@@ -141,17 +140,17 @@ namespace hash23 {
             std::size_t const block_size = buffer_.size();
             std::size_t const full_blocks = (data.size() - copy_bytes) / block_size;
             for (std::size_t i = 0; i < full_blocks; ++i) {
-                std::memcpy(buffer_.data(), data.data() + offset, block_size);
+                std::copy_n(data.data() + offset, block_size, buffer_.data());
                 transform();
                 offset += block_size;
                 ++iterations_;
             }
             std::size_t const leftover = data.size() - offset;
-            std::memcpy(buffer_.data(), data.data() + offset, leftover);
+            std::copy_n(data.data() + offset, leftover, buffer_.data());
             buffer_size_ = leftover;
         }
 
-        std::array<std::byte, 64> finalize() {
+        constexpr std::array<std::byte, 64> finalize() {
             constexpr auto to_big_endian = [](auto const x, auto *b) constexpr {
                 if constexpr (std::endian::native == std::endian::big) {
                     *b = static_cast<std::uint8_t>(x);
@@ -169,7 +168,7 @@ namespace hash23 {
             // TODO: total_bits should be a 128bit integer
             std::size_t const total_bits = (iterations_ * buffer_.size() + buffer_size_) << 3;
 
-            std::memset(&buffer_[buffer_size_], 0, buffer_.size() - buffer_size_);
+            std::fill_n(buffer_.data() + buffer_size_, buffer_.size() - buffer_size_, 0);
             buffer_[buffer_size_] = 0x80;
             to_big_endian(total_bits, buffer_.data() + buffer_.size() - 4);
             transform();
