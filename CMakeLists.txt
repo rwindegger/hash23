@@ -14,7 +14,6 @@ add_library(
         INTERFACE
         include/hash23/hash23.h
         include/hash23/sha512.h
-        ../test_database/basic_sha512.h
 )
 add_library(hash23::hash23 ALIAS hash23)
 
