@@ -167,11 +167,17 @@ namespace hash23 {
 
             // TODO: total_bits should be a 128bit integer
             std::size_t const total_bits = (iterations_ * buffer_.size() + buffer_size_) << 3;
-
             std::fill_n(buffer_.data() + buffer_size_, buffer_.size() - buffer_size_, 0);
             buffer_[buffer_size_] = 0x80;
-            to_big_endian(total_bits, buffer_.data() + buffer_.size() - 4);
-            transform();
+            if (buffer_size_ < buffer_.size() - 16) {
+                to_big_endian(total_bits, buffer_.data() + buffer_.size() - 4);
+                transform();
+            } else {
+                transform();
+                std::fill_n(buffer_.data(), buffer_.size(), 0);
+                to_big_endian(total_bits, buffer_.data() + buffer_.size() - 4);
+                transform();
+            }
 
             std::array<std::byte, 64> result{};
             for (std::size_t i = 0; i < hash_.size(); ++i) {
