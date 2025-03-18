@@ -7,7 +7,7 @@ find_package(GTest REQUIRED)
 add_executable(
         hash23_tests
         main.cpp
-        sha512_tests.cpp
+        sha2_512_tests.cpp
 )
 
 target_link_libraries(

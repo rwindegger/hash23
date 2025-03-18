@@ -4,4 +4,4 @@
 
 #pragma once
 
-#include <hash23/sha512.h>
+#include <hash23/sha2_512.h>

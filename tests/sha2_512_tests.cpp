@@ -6,8 +6,8 @@
 #include <hash23/hash23.h>
 
 namespace {
-    TEST(sha512, single_block_test) {
-        auto const actual = hash23::sha512::calculate("Hello, World!");
+    TEST(sha2_512, single_block_test) {
+        auto const actual = hash23::sha2_512::calculate("Hello, World!");
         constexpr std::array<std::byte, 64> expected = {
             static_cast<std::byte>(0x37), static_cast<std::byte>(0x4D), static_cast<std::byte>(0x79),
             static_cast<std::byte>(0x4A), static_cast<std::byte>(0x95), static_cast<std::byte>(0xCD),
@@ -35,8 +35,8 @@ namespace {
         EXPECT_EQ(expected, actual);
     }
 
-    TEST(sha512, multiple_blocks_test) {
-        auto const actual = hash23::sha512::calculate(
+    TEST(sha2_512, multiple_blocks_test) {
+        auto const actual = hash23::sha2_512::calculate(
             R"(Hello, World!
 It's a beautiful day to calculate some hashes!
 It should be a very long string just to make sure the block size does not interfere with large datasets.
@@ -74,8 +74,8 @@ If not I know where to look.)"
         EXPECT_EQ(expected, actual);
     }
 
-    TEST(sha512, payload_size_between_896_and_1024_bit_test) {
-        auto const actual = hash23::sha512::calculate(
+    TEST(sha2_512, payload_size_between_896_and_1024_bit_test) {
+        auto const actual = hash23::sha2_512::calculate(
             R"(Hello, World!
 This is a text that will hit the sweet spot of 896 bits or 120 bytes.
 Just some more text to reach the spot.)"
@@ -107,8 +107,8 @@ Just some more text to reach the spot.)"
         EXPECT_EQ(expected, actual);
     }
 
-    TEST(sha512, payload_size_exactly_1024_bit_test) {
-        auto const actual = hash23::sha512::calculate(
+    TEST(sha2_512, payload_size_exactly_1024_bit_test) {
+        auto const actual = hash23::sha2_512::calculate(
             R"(Hello, World!
 This is a text that will hit the sweet spot of 896 bits or 120 bytes.
 Just some more text to reach the spot. Some.)"
@@ -140,8 +140,8 @@ Just some more text to reach the spot. Some.)"
         EXPECT_EQ(expected, actual);
     }
 
-    TEST(sha512, payload_size_exactly_1016_bit_test) {
-        auto const actual = hash23::sha512::calculate(R"(Hello, World!
+    TEST(sha2_512, payload_size_exactly_1016_bit_test) {
+        auto const actual = hash23::sha2_512::calculate(R"(Hello, World!
 This is a text that will hit the sweet spot of 896 bits or 120 bytes.
 Just some more text to reach the spot. Some)");
         constexpr std::array<std::byte, 64> expected = {

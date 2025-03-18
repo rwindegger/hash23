@@ -13,7 +13,7 @@ add_library(
         hash23
         INTERFACE
         include/hash23/hash23.h
-        include/hash23/sha512.h
+        include/hash23/sha2_512.h
 )
 add_library(hash23::hash23 ALIAS hash23)
 

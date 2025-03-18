@@ -11,7 +11,7 @@
 #include <cstdint>
 
 namespace hash23 {
-    class sha512 {
+    class sha2_512 {
     private:
         static constexpr std::array<std::uint64_t, 80> look_up_table_{
             0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
@@ -196,7 +196,7 @@ namespace hash23 {
 
     public:
         static std::array<std::byte, 64> calculate(std::span<std::uint8_t const> const data) {
-            sha512 r;
+            sha2_512 r;
             r.update(data);
             return r.finalize();
         }
