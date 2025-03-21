@@ -8,8 +8,8 @@ class hash23(ConanFile):
     license = "MIT"
     author = "Rene Windegger <rene@windegger.wtf>"
     url = "https://github.com/rwindegger/hash23"
-    description = "A modern, header-only C++ library for MessagePack serialization and deserialization."
-    topics = ("msgpack", "serialization", "MessagePack")
+    description = "This library contains various hashing algorithms written in modern C++."
+    topics = ("hashing", "hash", "sha512", "sha512-hash", "sha2-512")
 
     settings = "os", "compiler", "build_type", "arch"
 
