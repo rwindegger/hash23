@@ -84,7 +84,7 @@ namespace hash23 {
         }
 
         constexpr void transform() {
-            constexpr auto to_big_endian = [](auto const *b) {
+            constexpr auto to_big_endian = [](auto const *b) constexpr {
                 if constexpr (std::endian::native == std::endian::big) {
                     return static_cast<uint64_t>(*((b) + 0)) | static_cast<uint64_t>(*((b) + 1)) << 8 |
                            static_cast<uint64_t>(*((b) + 2)) << 16 | static_cast<uint64_t>(*((b) + 3)) << 24 |
