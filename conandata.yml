@@ -3,3 +3,4 @@
 
 requirements:
   - "gtest/1.16.0"
+  - "bigint23/2.1"

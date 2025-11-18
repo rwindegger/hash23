@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(hash23 LANGUAGES C CXX VERSION 1.0)
+project(hash23 LANGUAGES C CXX VERSION 1.1)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,6 +16,13 @@ add_library(
         include/hash23/sha2_512.h
 )
 add_library(hash23::hash23 ALIAS hash23)
+
+find_package(bigint23 REQUIRED)
+
+target_link_libraries(hash23
+        INTERFACE
+        bigint23::bigint23
+)
 
 target_compile_features(hash23 INTERFACE cxx_std_23)
 

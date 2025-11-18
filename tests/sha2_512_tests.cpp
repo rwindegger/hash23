@@ -35,8 +35,37 @@ namespace {
         EXPECT_EQ(expected, actual);
     }
 
+    TEST(sha2_512, single_block_string_test) {
+        auto const actual = hash23::sha2_512::calculate(std::string{"Hello, World!"});
+        constexpr std::array<std::byte, 64> expected = {
+            static_cast<std::byte>(0x37), static_cast<std::byte>(0x4D), static_cast<std::byte>(0x79),
+            static_cast<std::byte>(0x4A), static_cast<std::byte>(0x95), static_cast<std::byte>(0xCD),
+            static_cast<std::byte>(0xCF), static_cast<std::byte>(0xD8), static_cast<std::byte>(0xB3),
+            static_cast<std::byte>(0x59), static_cast<std::byte>(0x93), static_cast<std::byte>(0x18),
+            static_cast<std::byte>(0x5F), static_cast<std::byte>(0xEF), static_cast<std::byte>(0x9B),
+            static_cast<std::byte>(0xA3), static_cast<std::byte>(0x68), static_cast<std::byte>(0xF1),
+            static_cast<std::byte>(0x60), static_cast<std::byte>(0xD8), static_cast<std::byte>(0xDA),
+            static_cast<std::byte>(0xF4), static_cast<std::byte>(0x32), static_cast<std::byte>(0xD0),
+            static_cast<std::byte>(0x8B), static_cast<std::byte>(0xA9), static_cast<std::byte>(0xF1),
+            static_cast<std::byte>(0xED), static_cast<std::byte>(0x1E), static_cast<std::byte>(0x5A),
+            static_cast<std::byte>(0xBE), static_cast<std::byte>(0x6C), static_cast<std::byte>(0xC6),
+            static_cast<std::byte>(0x92), static_cast<std::byte>(0x91), static_cast<std::byte>(0xE0),
+            static_cast<std::byte>(0xFA), static_cast<std::byte>(0x2F), static_cast<std::byte>(0xE0),
+            static_cast<std::byte>(0x0), static_cast<std::byte>(0x6A), static_cast<std::byte>(0x52),
+            static_cast<std::byte>(0x57), static_cast<std::byte>(0xE), static_cast<std::byte>(0xF1),
+            static_cast<std::byte>(0x8C), static_cast<std::byte>(0x19), static_cast<std::byte>(0xDE),
+            static_cast<std::byte>(0xF4), static_cast<std::byte>(0xE6), static_cast<std::byte>(0x17),
+            static_cast<std::byte>(0xC3), static_cast<std::byte>(0x3C), static_cast<std::byte>(0xE5),
+            static_cast<std::byte>(0x2E), static_cast<std::byte>(0xF0), static_cast<std::byte>(0xA6),
+            static_cast<std::byte>(0xE5), static_cast<std::byte>(0xFB), static_cast<std::byte>(0xE3),
+            static_cast<std::byte>(0x18), static_cast<std::byte>(0xCB), static_cast<std::byte>(0x3),
+            static_cast<std::byte>(0x87)
+        };
+        EXPECT_EQ(expected, actual);
+    }
+
     TEST(sha2_512, multiple_blocks_test) {
-        auto const actual = hash23::sha2_512::calculate(
+        constexpr auto actual = hash23::sha2_512::calculate(
             R"(Hello, World!
 It's a beautiful day to calculate some hashes!
 It should be a very long string just to make sure the block size does not interfere with large datasets.

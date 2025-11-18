@@ -6,11 +6,17 @@
 
 #include <algorithm>
 #include <array>
+#include <bit>
 #include <climits>
 #include <cstddef>
 #include <cstdint>
+#include <ranges>
+#include <span>
+#include <bigint23/bigint.hpp>
 
 namespace hash23 {
+    using uint128_t = bigint::bigint<bigint::BitWidth{128}, bigint::Signedness::Unsigned>;
+
     class sha2_512 {
     private:
         static constexpr std::array<std::uint64_t, 80> look_up_table_{
@@ -39,47 +45,47 @@ namespace hash23 {
             0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
             0x510e527fade682d1, 0x9b05688c2b3e6c1f, 0x1f83d9abfb41bd6b, 0x5be0cd19137e2179
         };
-        std::size_t iterations_ = 0;
+        uint128_t iterations_ = 0;
         std::size_t buffer_size_ = 0;
         std::array<std::uint8_t, 128> buffer_{};
 
         template<typename T, std::size_t N = sizeof(T) * CHAR_BIT>
-        static constexpr T rotate_right(T const value, std::size_t const count) {
+        [[nodiscard]] static constexpr T rotate_right(T const value, std::size_t const count) {
             return (value >> (count & (N - 1))) | (value << (-(count & (N - 1)) & (N - 1)));
         }
 
         template<typename T>
-        static constexpr T shift_right(T const value, std::size_t const count) {
+        [[nodiscard]] static constexpr T shift_right(T const value, std::size_t const count) {
             return value >> count;
         }
 
         template<typename T>
-        static constexpr T ch(T const x, T const y, T const z) {
+        [[nodiscard]] static constexpr T ch(T const x, T const y, T const z) {
             return (x & y) ^ (~x & z);
         }
 
         template<typename T>
-        static constexpr T maj(T const x, T const y, T const z) {
+        [[nodiscard]] static constexpr T maj(T const x, T const y, T const z) {
             return (x & y) ^ (x & z) ^ (y & z);
         }
 
         template<typename T>
-        static constexpr T big_sigma_0(T const value) {
+        [[nodiscard]] static constexpr T big_sigma_0(T const value) {
             return rotate_right(value, 28) ^ rotate_right(value, 34) ^ rotate_right(value, 39);
         }
 
         template<typename T>
-        static constexpr T big_sigma_1(T const value) {
+        [[nodiscard]] static constexpr T big_sigma_1(T const value) {
             return rotate_right(value, 14) ^ rotate_right(value, 18) ^ rotate_right(value, 41);
         }
 
         template<typename T>
-        static constexpr T small_sigma_0(T const value) {
+        [[nodiscard]] static constexpr T small_sigma_0(T const value) {
             return rotate_right(value, 1) ^ rotate_right(value, 8) ^ shift_right(value, 7);
         }
 
         template<typename T>
-        static constexpr T small_sigma_1(T const value) {
+        [[nodiscard]] static constexpr T small_sigma_1(T const value) {
             return rotate_right(value, 19) ^ rotate_right(value, 61) ^ shift_right(value, 6);
         }
 
@@ -124,7 +130,9 @@ namespace hash23 {
             }
         }
 
-        constexpr void update(std::span<std::uint8_t const> const data) {
+        template<typename T>
+            requires std::ranges::contiguous_range<T>
+        constexpr void update(T const &data) {
             std::size_t const remaining = buffer_.size() - buffer_size_;
             std::size_t const copy_bytes = std::min(data.size(), remaining);
             std::copy_n(data.begin(), copy_bytes, buffer_.data() + buffer_size_);
@@ -150,32 +158,23 @@ namespace hash23 {
             buffer_size_ = leftover;
         }
 
-        constexpr std::array<std::byte, 64> finalize() {
-            constexpr auto to_big_endian = [](auto const x, auto *b) constexpr {
-                if constexpr (std::endian::native == std::endian::big) {
-                    *b = static_cast<std::uint8_t>(x);
-                    *(b + 1) = static_cast<std::uint8_t>(x >> 8);
-                    *(b + 2) = static_cast<std::uint8_t>(x >> 16);
-                    *(b + 3) = static_cast<std::uint8_t>(x >> 24);
-                } else {
-                    *(b + 3) = static_cast<std::uint8_t>(x);
-                    *(b + 2) = static_cast<std::uint8_t>(x >> 8);
-                    *(b + 1) = static_cast<std::uint8_t>(x >> 16);
-                    *b = static_cast<std::uint8_t>(x >> 24);
-                }
-            };
-
-            // TODO: total_bits should be a 128bit integer
-            std::size_t const total_bits = (iterations_ * buffer_.size() + buffer_size_) << 3;
+        [[nodiscard]] constexpr std::array<std::byte, 64> finalize() {
+            uint128_t const total_bits = (iterations_ * buffer_.size() + buffer_size_) << 3;
+            uint128_t total_be = total_bits;
+            if constexpr (std::endian::native == std::endian::little) {
+                total_be = bigint::byteswap(total_bits);
+            }
             std::fill_n(buffer_.data() + buffer_size_, buffer_.size() - buffer_size_, 0);
             buffer_[buffer_size_] = 0x80;
             if (buffer_size_ < buffer_.size() - 16) {
-                to_big_endian(total_bits, buffer_.data() + buffer_.size() - 4);
+                auto temp = std::bit_cast<std::array<std::uint8_t, 16>>(total_be);
+                std::copy_n(temp.data(), temp.size(), buffer_.data() + buffer_.size() - temp.size());
                 transform();
             } else {
                 transform();
                 std::fill_n(buffer_.data(), buffer_.size(), 0);
-                to_big_endian(total_bits, buffer_.data() + buffer_.size() - 4);
+                auto temp = std::bit_cast<std::array<std::uint8_t, 16>>(total_be);
+                std::copy_n(temp.data(), temp.size(), buffer_.data() + buffer_.size() - temp.size());
                 transform();
             }
 
@@ -195,21 +194,19 @@ namespace hash23 {
         }
 
     public:
-        static std::array<std::byte, 64> calculate(std::span<std::uint8_t const> const data) {
+        template<typename T>
+            requires std::ranges::contiguous_range<T>
+        [[nodiscard]] static constexpr std::array<std::byte, 64> calculate(T const &data) {
             sha2_512 r;
             r.update(data);
             return r.finalize();
         }
 
-        static std::array<std::byte, 64> calculate(std::string const &str) {
-            auto const block = std::span(reinterpret_cast<std::uint8_t const *>(str.data()), str.size());
-            return calculate(block);
-        }
-
         template<std::size_t N>
-        static std::array<std::byte, 64> calculate(char const (&str)[N]) {
-            auto const block = std::span(reinterpret_cast<std::uint8_t const *>(str), N - 1);
+        [[nodiscard]] static constexpr std::array<std::byte, 64> calculate(char const (&str)[N]) {
+            auto const block = std::span(str, N - 1);
             return calculate(block);
         }
     };
 }
+
