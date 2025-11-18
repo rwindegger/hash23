@@ -26,7 +26,10 @@ file(
 )
 include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 
-CPMAddPackage("gh:rwindegger/bigint23#v2.2")
+CPMAddPackage(
+        URI "gh:rwindegger/bigint23#v2.2"
+        OPTIONS "BUILD_TESTING OFF"
+)
 
 target_link_libraries(hash23
         INTERFACE
