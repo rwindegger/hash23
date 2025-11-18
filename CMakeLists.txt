@@ -27,6 +27,7 @@ file(
 include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 
 CPMAddPackage(
+        NAME bigint
         URI "gh:rwindegger/bigint23#v2.2"
         OPTIONS "BUILD_TESTING OFF"
 )
