@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(hash23 LANGUAGES C CXX VERSION 1.2)
+project(hash23 LANGUAGES C CXX VERSION 1.3)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -29,8 +29,8 @@ include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 CPMAddPackage(
         NAME bigint
         GITHUB_REPOSITORY rwindegger/bigint23
-        GIT_TAG v2.2
-        VERSION 2.2
+        GIT_TAG v2.3
+        VERSION 2.3
         OPTIONS "BUILD_TESTING OFF"
 )
 
