@@ -51,7 +51,14 @@ namespace hash23 {
 
         template<typename T, std::size_t N = sizeof(T) * CHAR_BIT>
         [[nodiscard]] static constexpr T rotate_right(T const value, std::size_t const count) {
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4146 )
+#endif
             return (value >> (count & (N - 1))) | (value << (-(count & (N - 1)) & (N - 1)));
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
         }
 
         template<typename T>
@@ -209,4 +216,3 @@ namespace hash23 {
         }
     };
 }
-
