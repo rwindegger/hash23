@@ -10,6 +10,7 @@ add_executable(
         sha2_512_tests.cpp
         fnv_1_tests.cpp
         fnv_1a_tests.cpp
+        crc32_tests.cpp
 )
 
 if(MSVC)
