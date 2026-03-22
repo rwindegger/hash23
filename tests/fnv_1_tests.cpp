@@ -2,11 +2,11 @@
 // Created by Rene Windegger on 22/03/2026.
 //
 
-#include <gtest/gtest.h>
-#include <hash23/hash23.h>
 #include <cstddef>
 #include <string>
 #include <vector>
+#include <gtest/gtest.h>
+#include <hash23/hash23.h>
 
 namespace {
     TEST(fnv_1, single_block_test) {
@@ -44,8 +44,8 @@ namespace {
 
     TEST(fnv_1, high_byte_values_test) {
         std::vector<signed char> const data = {
-            static_cast<signed char>(0x80), static_cast<signed char>(0xAB),
-            static_cast<signed char>(0xFF), 0x00, 0x7F
+            static_cast<signed char>(-128), static_cast<signed char>(-85),
+            static_cast<signed char>(-1), static_cast<signed char>(0), static_cast<signed char>(127)
         };
         auto const actual = hash23::fnv_1::calculate(data);
         if constexpr (sizeof(std::size_t) == 4) {
