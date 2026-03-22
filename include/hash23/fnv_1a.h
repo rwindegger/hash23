@@ -36,7 +36,7 @@ namespace hash23 {
         }
 
         template<typename T>
-            requires std::ranges::contiguous_range<T>
+            requires std::ranges::contiguous_range<T> and (sizeof(typename T::value_type) == 1)
         constexpr void update(T const &data) {
             for (auto const &byte: data) {
                 using value_type = std::remove_cvref_t<decltype(byte)>;
