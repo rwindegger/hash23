@@ -4,50 +4,47 @@
 
 #pragma once
 
+#include <ranges>
 #include <span>
-#include <vector>
 
 namespace hash23 {
     class fnv_1a {
     private:
-        std::vector<std::uint8_t> buffer_;
+        std::size_t hash_ = offset_basis();
 
-        [[nodiscard]] static consteval std::size_t prime() {
+        [[nodiscard]] static constexpr std::size_t prime() {
+            static_assert(sizeof(std::size_t) == 4 || sizeof(std::size_t) == 8,
+                          "hash23::fnv_1::prime requires 32-bit or 64-bit std::size_t");
             if constexpr (sizeof(std::size_t) == 4) {
                 return 0x01000193uz;
             } else {
                 return 0x00000100000001b3uz;
             }
-            return 0uz;
         }
 
-        [[nodiscard]] static consteval std::size_t offset_basis() {
+        [[nodiscard]] static constexpr std::size_t offset_basis() {
+            static_assert(sizeof(std::size_t) == 4 || sizeof(std::size_t) == 8,
+                          "hash23::fnv_1::offset_basis requires 32-bit or 64-bit std::size_t");
             if constexpr (sizeof(std::size_t) == 4) {
                 return 0x811c9dc5uz;
             } else {
                 return 0xcbf29ce484222325uz;
             }
-            return 0uz;
         }
 
         template<typename T>
             requires std::ranges::contiguous_range<T>
         constexpr void update(T const &data) {
-            auto const start_offset = buffer_.size();
-            buffer_.resize(start_offset + data.size());
-            std::copy_n(data.data(), data.size(), buffer_.data() + start_offset);
+            for (auto const &byte: data) {
+                hash_ ^= byte;
+                hash_ *= prime();
+            }
         }
 
         [[nodiscard]] constexpr std::size_t finalize() const {
-            std::size_t hash = offset_basis();
-
-            for (auto const &byte : buffer_) {
-                hash ^= byte;
-                hash *= prime();
-            }
-
-            return hash;
+            return hash_;
         }
+
     public:
         template<typename T>
             requires std::ranges::contiguous_range<T>
