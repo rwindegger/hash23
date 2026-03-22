@@ -8,6 +8,8 @@ add_executable(
         hash23_tests
         main.cpp
         sha2_512_tests.cpp
+        fnv_1_tests.cpp
+        fnv_1a_tests.cpp
 )
 
 if(MSVC)
