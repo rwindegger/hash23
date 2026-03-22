@@ -37,7 +37,7 @@ namespace hash23 {
         constexpr void update(T const &data) {
             for (auto const &byte : data) {
                 hash_ *= prime();
-                hash_ ^= byte;
+                hash_ ^= static_cast<std::size_t>(byte);
             }
         }
 
