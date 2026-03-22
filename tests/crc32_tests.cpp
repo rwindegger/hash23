@@ -2,25 +2,46 @@
 // Created by Rene Windegger on 22/03/2026.
 //
 
+#include <cstdint>
+#include <string>
 #include <gtest/gtest.h>
 #include <hash23/hash23.h>
 
 namespace {
     TEST(crc32, single_block_test) {
         constexpr auto actual = hash23::crc32::calculate("Hello, World!");
-        constexpr std::size_t expected = 0xEC4AC3D0;
+        constexpr std::uint32_t expected = 0xEC4AC3D0;
         EXPECT_EQ(expected, actual);
     }
 
     TEST(crc32, string_test) {
         auto const actual = hash23::crc32::calculate(std::string{"Hello, World!"});
-        constexpr std::size_t expected = 0xEC4AC3D0;
+        constexpr std::uint32_t expected = 0xEC4AC3D0;
         EXPECT_EQ(expected, actual);
     }
 
     TEST(crc32, empty_input_test) {
         constexpr auto actual = hash23::crc32::calculate("");
-        constexpr std::size_t expected = 0x00000000;
+        constexpr std::uint32_t expected = 0x00000000;
+        EXPECT_EQ(expected, actual);
+    }
+
+    TEST(crc32, high_byte_values_test) {
+        std::vector<signed char> const data = {
+            static_cast<signed char>(-128), static_cast<signed char>(-85),
+            static_cast<signed char>(-1), static_cast<signed char>(0), static_cast<signed char>(127)
+        };
+        auto const actual = hash23::crc32::calculate(data);
+        constexpr std::size_t expected = 0x938C81CB;
+        EXPECT_EQ(expected, actual);
+    }
+
+    TEST(crc32, std_byte_test) {
+        std::vector<std::byte> const data = {
+            std::byte{0x80}, std::byte{0xAB}, std::byte{0xFF}, std::byte{0x00}, std::byte{0x7F}
+        };
+        auto const actual = hash23::crc32::calculate(data);
+        constexpr std::size_t expected = 0x938C81CB;
         EXPECT_EQ(expected, actual);
     }
 }

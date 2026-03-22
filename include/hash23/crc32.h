@@ -43,7 +43,7 @@ namespace hash23 {
                     b = static_cast<std::uint8_t>(byte);
                 }
                 hash_ ^= b;
-                hash_ = (hash_ >> 8) ^ crc_table.at(hash_ & 0xFF);
+                hash_ = (hash_ >> 8) ^ crc_table[hash_ & 0xFF];
             }
         }
 
