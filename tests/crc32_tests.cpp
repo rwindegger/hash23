@@ -2,8 +2,10 @@
 // Created by Rene Windegger on 22/03/2026.
 //
 
+#include <cstddef>
 #include <cstdint>
 #include <string>
+#include <vector>
 #include <gtest/gtest.h>
 #include <hash23/hash23.h>
 

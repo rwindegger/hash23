@@ -34,7 +34,7 @@ namespace hash23 {
         template<typename T>
             requires std::ranges::contiguous_range<T> and (sizeof(std::ranges::range_value_t<T>) == 1)
         constexpr void update(T const &data) {
-            for (auto const &byte: data) {
+            for (auto const &byte : data) {
                 using value_type = std::remove_cvref_t<decltype(byte)>;
                 std::uint8_t b;
                 if constexpr (std::is_same_v<value_type, std::byte>) {
