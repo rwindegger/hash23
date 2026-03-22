@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 #include <hash23/hash23.h>
+#include <string>
 
 namespace {
     TEST(fnv_1a, single_block_test) {

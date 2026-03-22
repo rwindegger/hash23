@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <ranges>
 #include <span>
 
@@ -14,7 +15,7 @@ namespace hash23 {
 
         [[nodiscard]] static constexpr std::size_t prime() {
             static_assert(sizeof(std::size_t) == 4 || sizeof(std::size_t) == 8,
-                          "hash23::fnv_1::prime requires 32-bit or 64-bit std::size_t");
+                          "hash23::fnv_1a::prime requires 32-bit or 64-bit std::size_t");
             if constexpr (sizeof(std::size_t) == 4) {
                 return 0x01000193uz;
             } else {
@@ -24,7 +25,7 @@ namespace hash23 {
 
         [[nodiscard]] static constexpr std::size_t offset_basis() {
             static_assert(sizeof(std::size_t) == 4 || sizeof(std::size_t) == 8,
-                          "hash23::fnv_1::offset_basis requires 32-bit or 64-bit std::size_t");
+                          "hash23::fnv_1a::offset_basis requires 32-bit or 64-bit std::size_t");
             if constexpr (sizeof(std::size_t) == 4) {
                 return 0x811c9dc5uz;
             } else {
