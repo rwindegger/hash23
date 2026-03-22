@@ -57,7 +57,7 @@ namespace hash23 {
 
     public:
         template<typename T>
-            requires std::ranges::contiguous_range<T>
+            requires std::ranges::contiguous_range<T> and (sizeof(typename T::value_type) == 1)
         [[nodiscard]] static constexpr std::size_t calculate(T const &data) {
             fnv_1 r;
             r.update(data);

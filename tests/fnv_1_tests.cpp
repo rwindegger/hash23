@@ -21,7 +21,7 @@ namespace {
     }
 
     TEST(fnv_1, string_test) {
-        constexpr auto actual = hash23::fnv_1::calculate(std::string{"Hello, World!"});
+        auto const actual = hash23::fnv_1::calculate(std::string{"Hello, World!"});
         if constexpr (sizeof(std::size_t) == 4) {
             constexpr std::size_t expected = 0x4291a886uz;
             EXPECT_EQ(expected, actual);
