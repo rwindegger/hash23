@@ -32,7 +32,7 @@ namespace {
             static_cast<signed char>(-1), static_cast<signed char>(0), static_cast<signed char>(127)
         };
         auto const actual = hash23::crc32::calculate(data);
-        constexpr std::size_t expected = 0x938C81CB;
+        constexpr std::uint32_t expected = 0x938C81CB;
         EXPECT_EQ(expected, actual);
     }
 
@@ -41,7 +41,7 @@ namespace {
             std::byte{0x80}, std::byte{0xAB}, std::byte{0xFF}, std::byte{0x00}, std::byte{0x7F}
         };
         auto const actual = hash23::crc32::calculate(data);
-        constexpr std::size_t expected = 0x938C81CB;
+        constexpr std::uint32_t expected = 0x938C81CB;
         EXPECT_EQ(expected, actual);
     }
 }
