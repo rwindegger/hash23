@@ -5,8 +5,10 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <ranges>
 #include <span>
+#include <type_traits>
 
 namespace hash23 {
     class fnv_1 {
@@ -37,8 +39,15 @@ namespace hash23 {
             requires std::ranges::contiguous_range<T>
         constexpr void update(T const &data) {
             for (auto const &byte : data) {
+                using value_type = std::remove_cvref_t<decltype(byte)>;
+                std::uint8_t b;
+                if constexpr (std::is_same_v<value_type, std::byte>) {
+                    b = std::to_integer<std::uint8_t>(byte);
+                } else {
+                    b = static_cast<std::uint8_t>(byte);
+                }
                 hash_ *= prime();
-                hash_ ^= static_cast<std::uint8_t>(byte);
+                hash_ ^= b;
             }
         }
 
