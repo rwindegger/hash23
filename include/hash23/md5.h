@@ -103,9 +103,14 @@ namespace hash23 {
         template<typename T>
             requires std::ranges::contiguous_range<T> and (sizeof(std::ranges::range_value_t<T>) == 1)
         constexpr void update(T const &data) {
+            auto const * const data_ptr = std::ranges::data(data);
+            std::size_t const data_size = std::ranges::size(data);
             std::size_t const remaining = buffer_.size() - buffer_size_;
-            std::size_t const copy_bytes = std::min(data.size(), remaining);
-            std::copy_n(data.begin(), copy_bytes, buffer_.data() + buffer_size_);
+            std::size_t const copy_bytes = std::min(data_size, remaining);
+            // Manual byte copy for constexpr
+            for (std::size_t i = 0; i < copy_bytes; ++i) {
+                buffer_[buffer_size_ + i] = static_cast<std::uint8_t>(data_ptr[i]);
+            }
             buffer_size_ += copy_bytes;
 
             if (buffer_size_ < buffer_.size())
@@ -116,15 +121,19 @@ namespace hash23 {
 
             std::size_t offset = copy_bytes;
             std::size_t const block_size = buffer_.size();
-            std::size_t const full_blocks = (data.size() - copy_bytes) / block_size;
+            std::size_t const full_blocks = (data_size - copy_bytes) / block_size;
             for (std::size_t i = 0; i < full_blocks; ++i) {
-                std::copy_n(data.data() + offset, block_size, buffer_.data());
+                for (std::size_t j = 0; j < block_size; ++j) {
+                    buffer_[j] = static_cast<std::uint8_t>(data_ptr[offset + j]);
+                }
                 transform();
                 offset += block_size;
                 ++iterations_;
             }
-            std::size_t const leftover = data.size() - offset;
-            std::copy_n(data.data() + offset, leftover, buffer_.data());
+            std::size_t const leftover = data_size - offset;
+            for (std::size_t i = 0; i < leftover; ++i) {
+                buffer_[i] = static_cast<std::uint8_t>(data_ptr[offset + i]);
+            }
             buffer_size_ = leftover;
         }
 
