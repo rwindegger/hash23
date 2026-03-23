@@ -87,11 +87,11 @@ namespace hash23 {
                     F = C ^ (B | ~D);
                     g = (7 * i) % 16;
                 }
-                F = F + A + K[i] + M[g];
+                F = F + A + K[static_cast<std::size_t>(i)] + M[static_cast<std::size_t>(g)];
                 A = D;
                 D = C;
                 C = B;
-                B = B + std::rotl(F, s[i]);
+                B = B + std::rotl(F, s[static_cast<std::size_t>(i)]);
             }
 
             a0_ += A;
