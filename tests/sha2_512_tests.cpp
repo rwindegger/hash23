@@ -2,6 +2,9 @@
 // Created by Rene Windegger on 14/03/2025.
 //
 
+#include <array>
+#include <cstddef>
+#include <string>
 #include <gtest/gtest.h>
 #include <hash23/hash23.h>
 

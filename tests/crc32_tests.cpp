@@ -2,10 +2,10 @@
 // Created by Rene Windegger on 22/03/2026.
 //
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <string>
-#include <vector>
 #include <gtest/gtest.h>
 #include <hash23/hash23.h>
 
@@ -29,20 +29,20 @@ namespace {
     }
 
     TEST(crc32, high_byte_values_test) {
-        std::vector<signed char> const data = {
+        constexpr auto data = std::array{
             static_cast<signed char>(-128), static_cast<signed char>(-85),
             static_cast<signed char>(-1), static_cast<signed char>(0), static_cast<signed char>(127)
         };
-        auto const actual = hash23::crc32::calculate(data);
+        constexpr auto actual = hash23::crc32::calculate(data);
         constexpr std::uint32_t expected = 0x938C81CB;
         EXPECT_EQ(expected, actual);
     }
 
     TEST(crc32, std_byte_test) {
-        std::vector<std::byte> const data = {
+        constexpr auto data = std::array{
             std::byte{0x80}, std::byte{0xAB}, std::byte{0xFF}, std::byte{0x00}, std::byte{0x7F}
         };
-        auto const actual = hash23::crc32::calculate(data);
+        constexpr auto actual = hash23::crc32::calculate(data);
         constexpr std::uint32_t expected = 0x938C81CB;
         EXPECT_EQ(expected, actual);
     }
