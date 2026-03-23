@@ -50,8 +50,21 @@ namespace hash23 {
         std::size_t buffer_size_{}; // Number of bytes currently in the buffer
         std::uint64_t iterations_{}; // Number of 512-bit blocks processed
 
+        template<typename T>
+        static constexpr T to_little_endian(T value) {
+            if constexpr (std::endian::native == std::endian::little) {
+                return value;
+            } else {
+                return std::byteswap(value);
+            }
+        }
+
         constexpr void transform() {
-            auto const M = std::bit_cast<std::array<std::uint32_t, 16> >(buffer_);
+            auto M = std::bit_cast<std::array<std::uint32_t, 16> >(buffer_);
+
+            for (auto i = 0; i < 16; ++i) {
+                M[i] = to_little_endian(M[i]);
+            }
 
             std::uint32_t A = a0_;
             std::uint32_t B = b0_;
