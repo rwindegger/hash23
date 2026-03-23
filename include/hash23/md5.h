@@ -59,7 +59,7 @@ namespace hash23 {
 
             for (auto i = 0; i < 64; ++i) {
                 std::uint32_t F{};
-                std::uint32_t g{};
+                int g{};
                 if (i < 16) {
                     F = (B & C) | (~B & D);
                     g = i;
