@@ -19,7 +19,7 @@ namespace {
             static_cast<std::byte>(0x42), static_cast<std::byte>(0xa4), static_cast<std::byte>(0x19),
             static_cast<std::byte>(0xd6),
         };
-        EXPECT_EQ(actual, expected);
+        EXPECT_EQ(expected, actual);
         constexpr auto actual1 = hash23::md5::calculate("The quick brown fox jumps over the lazy dog.");
         constexpr auto expected1 = std::array{
             static_cast<std::byte>(0xe4), static_cast<std::byte>(0xd9), static_cast<std::byte>(0x09),
@@ -29,7 +29,7 @@ namespace {
             static_cast<std::byte>(0xdf), static_cast<std::byte>(0x22), static_cast<std::byte>(0xcb),
             static_cast<std::byte>(0xd0),
         };
-        EXPECT_EQ(actual1, expected1);
+        EXPECT_EQ(expected1, actual1);
     }
 
     TEST(md5, single_block_string_test) {
@@ -42,7 +42,7 @@ namespace {
             static_cast<std::byte>(0x42), static_cast<std::byte>(0xa4), static_cast<std::byte>(0x19),
             static_cast<std::byte>(0xd6),
         };
-        EXPECT_EQ(actual, expected);
+        EXPECT_EQ(expected, actual);
         constexpr auto actual1 = hash23::md5::calculate(std::string{"The quick brown fox jumps over the lazy dog."});
         constexpr auto expected1 = std::array{
             static_cast<std::byte>(0xe4), static_cast<std::byte>(0xd9), static_cast<std::byte>(0x09),
@@ -52,7 +52,7 @@ namespace {
             static_cast<std::byte>(0xdf), static_cast<std::byte>(0x22), static_cast<std::byte>(0xcb),
             static_cast<std::byte>(0xd0),
         };
-        EXPECT_EQ(actual1, expected1);
+        EXPECT_EQ(expected1, actual1);
     }
 
     TEST(md5, multiple_blocks_test) {
@@ -103,6 +103,6 @@ If not I know where to look.)"
             static_cast<std::byte>(0xec), static_cast<std::byte>(0xf8), static_cast<std::byte>(0x42),
             static_cast<std::byte>(0x7e),
         };
-        EXPECT_EQ(actual, expected);
+        EXPECT_EQ(expected, actual);
     }
 }
