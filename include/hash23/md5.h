@@ -62,7 +62,7 @@ namespace hash23 {
         constexpr void transform() {
             auto M = std::bit_cast<std::array<std::uint32_t, 16> >(buffer_);
 
-            for (auto i = 0; i < 16; ++i) {
+            for (auto i = 0uz; i < 16uz; ++i) {
                 M[i] = to_little_endian(M[i]);
             }
 
