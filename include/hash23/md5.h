@@ -101,7 +101,9 @@ namespace hash23 {
         }
 
         template<typename T>
-            requires std::ranges::contiguous_range<T> and (sizeof(std::ranges::range_value_t<T>) == 1)
+            requires std::ranges::contiguous_range<T>
+                     and std::ranges::sized_range<T>
+                     and (sizeof(std::ranges::range_value_t<T>) == 1)
         constexpr void update(T const &data) {
             auto const *const data_ptr = std::ranges::data(data);
             std::size_t const data_size = std::ranges::size(data);
@@ -168,7 +170,9 @@ namespace hash23 {
 
     public:
         template<typename T>
-            requires std::ranges::contiguous_range<T> and (sizeof(std::ranges::range_value_t<T>) == 1)
+            requires std::ranges::contiguous_range<T>
+                     and std::ranges::sized_range<T>
+                     and (sizeof(std::ranges::range_value_t<T>) == 1)
         [[nodiscard]] static constexpr std::array<std::byte, 16> calculate(T const &data) {
             md5 r;
             r.update(data);
