@@ -11,6 +11,7 @@ add_executable(
         fnv_1_tests.cpp
         fnv_1a_tests.cpp
         crc32_tests.cpp
+        md5_tests.cpp
 )
 
 if(MSVC)
