@@ -279,4 +279,69 @@ If not I know where to look.)"});
         };
         EXPECT_EQ(expected, actual);
     }
+
+    TEST(sha2_512, high_byte_values_test) {
+        constexpr auto data = std::array{
+            static_cast<signed char>(-128), static_cast<signed char>(-85),
+            static_cast<signed char>(-1), static_cast<signed char>(0), static_cast<signed char>(127)
+        };
+        constexpr auto actual = hash23::sha2_512::calculate(data);
+        constexpr auto expected = std::array{
+            static_cast<std::byte>(0x55), static_cast<std::byte>(0x8d), static_cast<std::byte>(0xa2),
+            static_cast<std::byte>(0x06), static_cast<std::byte>(0x85), static_cast<std::byte>(0x07),
+            static_cast<std::byte>(0x12), static_cast<std::byte>(0xd0), static_cast<std::byte>(0x98),
+            static_cast<std::byte>(0xf2), static_cast<std::byte>(0x4d), static_cast<std::byte>(0x77),
+            static_cast<std::byte>(0xbc), static_cast<std::byte>(0xc9), static_cast<std::byte>(0xab),
+            static_cast<std::byte>(0x76), static_cast<std::byte>(0xa0), static_cast<std::byte>(0x8c),
+            static_cast<std::byte>(0x22), static_cast<std::byte>(0x8f), static_cast<std::byte>(0x91),
+            static_cast<std::byte>(0x80), static_cast<std::byte>(0x34), static_cast<std::byte>(0x92),
+            static_cast<std::byte>(0xce), static_cast<std::byte>(0x9c), static_cast<std::byte>(0xb2),
+            static_cast<std::byte>(0x26), static_cast<std::byte>(0x21), static_cast<std::byte>(0x69),
+            static_cast<std::byte>(0x2f), static_cast<std::byte>(0x4c), static_cast<std::byte>(0x4b),
+            static_cast<std::byte>(0x14), static_cast<std::byte>(0xc9), static_cast<std::byte>(0x5e),
+            static_cast<std::byte>(0x36), static_cast<std::byte>(0xa3), static_cast<std::byte>(0xe8),
+            static_cast<std::byte>(0x0f), static_cast<std::byte>(0xc3), static_cast<std::byte>(0xa3),
+            static_cast<std::byte>(0x5b), static_cast<std::byte>(0x0a), static_cast<std::byte>(0xcc),
+            static_cast<std::byte>(0x91), static_cast<std::byte>(0xf1), static_cast<std::byte>(0xcb),
+            static_cast<std::byte>(0x63), static_cast<std::byte>(0xa2), static_cast<std::byte>(0x69),
+            static_cast<std::byte>(0x2f), static_cast<std::byte>(0x3b), static_cast<std::byte>(0x9e),
+            static_cast<std::byte>(0x1e), static_cast<std::byte>(0x04), static_cast<std::byte>(0x40),
+            static_cast<std::byte>(0x38), static_cast<std::byte>(0x71), static_cast<std::byte>(0x1d),
+            static_cast<std::byte>(0xe5), static_cast<std::byte>(0x18), static_cast<std::byte>(0xe5),
+            static_cast<std::byte>(0x69),
+        };
+        EXPECT_EQ(expected, actual);
+    }
+
+    TEST(sha2_512, std_byte_test) {
+        constexpr auto data = std::array{
+            std::byte{0x80}, std::byte{0xAB}, std::byte{0xFF}, std::byte{0x00}, std::byte{0x7F}
+        };
+        constexpr auto actual = hash23::sha2_512::calculate(data);
+        constexpr auto expected = std::array{
+            static_cast<std::byte>(0x55), static_cast<std::byte>(0x8d), static_cast<std::byte>(0xa2),
+            static_cast<std::byte>(0x06), static_cast<std::byte>(0x85), static_cast<std::byte>(0x07),
+            static_cast<std::byte>(0x12), static_cast<std::byte>(0xd0), static_cast<std::byte>(0x98),
+            static_cast<std::byte>(0xf2), static_cast<std::byte>(0x4d), static_cast<std::byte>(0x77),
+            static_cast<std::byte>(0xbc), static_cast<std::byte>(0xc9), static_cast<std::byte>(0xab),
+            static_cast<std::byte>(0x76), static_cast<std::byte>(0xa0), static_cast<std::byte>(0x8c),
+            static_cast<std::byte>(0x22), static_cast<std::byte>(0x8f), static_cast<std::byte>(0x91),
+            static_cast<std::byte>(0x80), static_cast<std::byte>(0x34), static_cast<std::byte>(0x92),
+            static_cast<std::byte>(0xce), static_cast<std::byte>(0x9c), static_cast<std::byte>(0xb2),
+            static_cast<std::byte>(0x26), static_cast<std::byte>(0x21), static_cast<std::byte>(0x69),
+            static_cast<std::byte>(0x2f), static_cast<std::byte>(0x4c), static_cast<std::byte>(0x4b),
+            static_cast<std::byte>(0x14), static_cast<std::byte>(0xc9), static_cast<std::byte>(0x5e),
+            static_cast<std::byte>(0x36), static_cast<std::byte>(0xa3), static_cast<std::byte>(0xe8),
+            static_cast<std::byte>(0x0f), static_cast<std::byte>(0xc3), static_cast<std::byte>(0xa3),
+            static_cast<std::byte>(0x5b), static_cast<std::byte>(0x0a), static_cast<std::byte>(0xcc),
+            static_cast<std::byte>(0x91), static_cast<std::byte>(0xf1), static_cast<std::byte>(0xcb),
+            static_cast<std::byte>(0x63), static_cast<std::byte>(0xa2), static_cast<std::byte>(0x69),
+            static_cast<std::byte>(0x2f), static_cast<std::byte>(0x3b), static_cast<std::byte>(0x9e),
+            static_cast<std::byte>(0x1e), static_cast<std::byte>(0x04), static_cast<std::byte>(0x40),
+            static_cast<std::byte>(0x38), static_cast<std::byte>(0x71), static_cast<std::byte>(0x1d),
+            static_cast<std::byte>(0xe5), static_cast<std::byte>(0x18), static_cast<std::byte>(0xe5),
+            static_cast<std::byte>(0x69),
+        };
+        EXPECT_EQ(expected, actual);
+    }
 }

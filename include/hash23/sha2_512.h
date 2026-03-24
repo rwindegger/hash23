@@ -49,18 +49,6 @@ namespace hash23 {
         std::size_t buffer_size_ = 0;
         std::array<std::uint8_t, 128> buffer_{};
 
-        template<typename T, std::size_t N = sizeof(T) * CHAR_BIT>
-        [[nodiscard]] static constexpr T rotate_right(T const value, std::size_t const count) {
-#ifdef _MSC_VER
-#pragma warning( push )
-#pragma warning( disable : 4146 )
-#endif
-            return (value >> (count & (N - 1))) | (value << (-(count & (N - 1)) & (N - 1)));
-#ifdef _MSC_VER
-#pragma warning( pop )
-#endif
-        }
-
         template<typename T>
         [[nodiscard]] static constexpr T shift_right(T const value, std::size_t const count) {
             return value >> count;
@@ -78,22 +66,22 @@ namespace hash23 {
 
         template<typename T>
         [[nodiscard]] static constexpr T big_sigma_0(T const value) {
-            return rotate_right(value, 28) ^ rotate_right(value, 34) ^ rotate_right(value, 39);
+            return std::rotr(value, 28) ^ std::rotr(value, 34) ^ std::rotr(value, 39);
         }
 
         template<typename T>
         [[nodiscard]] static constexpr T big_sigma_1(T const value) {
-            return rotate_right(value, 14) ^ rotate_right(value, 18) ^ rotate_right(value, 41);
+            return std::rotr(value, 14) ^ std::rotr(value, 18) ^ std::rotr(value, 41);
         }
 
         template<typename T>
         [[nodiscard]] static constexpr T small_sigma_0(T const value) {
-            return rotate_right(value, 1) ^ rotate_right(value, 8) ^ shift_right(value, 7);
+            return std::rotr(value, 1) ^ std::rotr(value, 8) ^ shift_right(value, 7);
         }
 
         template<typename T>
         [[nodiscard]] static constexpr T small_sigma_1(T const value) {
-            return rotate_right(value, 19) ^ rotate_right(value, 61) ^ shift_right(value, 6);
+            return std::rotr(value, 19) ^ std::rotr(value, 61) ^ shift_right(value, 6);
         }
 
         constexpr void transform() {
@@ -139,29 +127,41 @@ namespace hash23 {
 
         template<typename T>
             requires std::ranges::contiguous_range<T>
+                     and std::ranges::sized_range<T>
+                     and (sizeof(std::ranges::range_value_t<T>) == 1)
         constexpr void update(T const &data) {
+            auto const *const data_ptr = std::ranges::data(data);
+            std::size_t const data_size = std::ranges::size(data);
             std::size_t const remaining = buffer_.size() - buffer_size_;
-            std::size_t const copy_bytes = std::min(data.size(), remaining);
-            std::copy_n(data.begin(), copy_bytes, buffer_.data() + buffer_size_);
+            std::size_t const copy_bytes = std::min(data_size, remaining);
+            // Manual byte copy for constexpr
+            for (std::size_t i = 0; i < copy_bytes; ++i) {
+                buffer_[buffer_size_ + i] = static_cast<std::uint8_t>(data_ptr[i]);
+            }
             buffer_size_ += copy_bytes;
 
-            if (buffer_size_ < buffer_.size())
+            if (buffer_size_ < buffer_.size()) {
                 return;
+            }
 
             transform();
             ++iterations_;
 
             std::size_t offset = copy_bytes;
             std::size_t const block_size = buffer_.size();
-            std::size_t const full_blocks = (data.size() - copy_bytes) / block_size;
+            std::size_t const full_blocks = (data_size - copy_bytes) / block_size;
             for (std::size_t i = 0; i < full_blocks; ++i) {
-                std::copy_n(data.data() + offset, block_size, buffer_.data());
+                for (std::size_t j = 0; j < block_size; ++j) {
+                    buffer_[j] = static_cast<std::uint8_t>(data_ptr[offset + j]);
+                }
                 transform();
                 offset += block_size;
                 ++iterations_;
             }
-            std::size_t const leftover = data.size() - offset;
-            std::copy_n(data.data() + offset, leftover, buffer_.data());
+            std::size_t const leftover = data_size - offset;
+            for (std::size_t i = 0; i < leftover; ++i) {
+                buffer_[i] = static_cast<std::uint8_t>(data_ptr[offset + i]);
+            }
             buffer_size_ = leftover;
         }
 
@@ -174,13 +174,13 @@ namespace hash23 {
             std::fill_n(buffer_.data() + buffer_size_, buffer_.size() - buffer_size_, 0);
             buffer_[buffer_size_] = 0x80;
             if (buffer_size_ < buffer_.size() - 16) {
-                auto temp = std::bit_cast<std::array<std::uint8_t, 16>>(total_be);
+                auto temp = std::bit_cast<std::array<std::uint8_t, 16> >(total_be);
                 std::copy_n(temp.data(), temp.size(), buffer_.data() + buffer_.size() - temp.size());
                 transform();
             } else {
                 transform();
                 std::fill_n(buffer_.data(), buffer_.size(), 0);
-                auto temp = std::bit_cast<std::array<std::uint8_t, 16>>(total_be);
+                auto temp = std::bit_cast<std::array<std::uint8_t, 16> >(total_be);
                 std::copy_n(temp.data(), temp.size(), buffer_.data() + buffer_.size() - temp.size());
                 transform();
             }
@@ -203,6 +203,8 @@ namespace hash23 {
     public:
         template<typename T>
             requires std::ranges::contiguous_range<T>
+                     and std::ranges::sized_range<T>
+                     and (sizeof(std::ranges::range_value_t<T>) == 1)
         [[nodiscard]] static constexpr std::array<std::byte, 64> calculate(T const &data) {
             sha2_512 r;
             r.update(data);

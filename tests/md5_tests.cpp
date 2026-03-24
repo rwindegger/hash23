@@ -106,6 +106,24 @@ If not I know where to look.)"
         EXPECT_EQ(expected, actual);
     }
 
+    TEST(md5, high_byte_values_test) {
+        constexpr auto data = std::array{
+            static_cast<signed char>(-128), static_cast<signed char>(-85),
+            static_cast<signed char>(-1), static_cast<signed char>(0), static_cast<signed char>(127)
+        };
+        constexpr auto actual = hash23::md5::calculate(data);
+        constexpr auto expected = std::array{
+            static_cast<std::byte>(0x69), static_cast<std::byte>(0x2b), static_cast<std::byte>(0x83),
+            static_cast<std::byte>(0xef), static_cast<std::byte>(0xda), static_cast<std::byte>(0x03),
+            static_cast<std::byte>(0x38), static_cast<std::byte>(0x5a), static_cast<std::byte>(0xa0),
+            static_cast<std::byte>(0x2a), static_cast<std::byte>(0xdd), static_cast<std::byte>(0x81),
+            static_cast<std::byte>(0xbb), static_cast<std::byte>(0xc5), static_cast<std::byte>(0x7f),
+            static_cast<std::byte>(0x96),
+
+        };
+        EXPECT_EQ(expected, actual);
+    }
+
     TEST(md5, std_byte_test) {
         constexpr auto data = std::array{
             std::byte{0x80}, std::byte{0xAB}, std::byte{0xFF}, std::byte{0x00}, std::byte{0x7F}
