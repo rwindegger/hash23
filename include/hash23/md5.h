@@ -103,7 +103,7 @@ namespace hash23 {
         template<typename T>
             requires std::ranges::contiguous_range<T> and (sizeof(std::ranges::range_value_t<T>) == 1)
         constexpr void update(T const &data) {
-            auto const * const data_ptr = std::ranges::data(data);
+            auto const *const data_ptr = std::ranges::data(data);
             std::size_t const data_size = std::ranges::size(data);
             std::size_t const remaining = buffer_.size() - buffer_size_;
             std::size_t const copy_bytes = std::min(data_size, remaining);
@@ -113,8 +113,9 @@ namespace hash23 {
             }
             buffer_size_ += copy_bytes;
 
-            if (buffer_size_ < buffer_.size())
+            if (buffer_size_ < buffer_.size()) {
                 return;
+            }
 
             transform();
             ++iterations_;
