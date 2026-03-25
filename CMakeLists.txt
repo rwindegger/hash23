@@ -33,8 +33,8 @@ include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 CPMAddPackage(
         NAME bigint
         GITHUB_REPOSITORY rwindegger/bigint23
-        GIT_TAG v2.3
-        VERSION 2.3
+        GIT_TAG v2.4
+        VERSION 2.4
         OPTIONS "BUILD_TESTING OFF"
 )
 

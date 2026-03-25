@@ -1,4 +1,4 @@
-name: cmake-big-endian-s390x.yml
+name: CMake on big-endian s390x
 on:
   push:
     branches: [ "main" ]
