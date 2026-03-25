@@ -397,7 +397,8 @@ namespace hash23 {
         }
 
         [[nodiscard]] constexpr std::array<std::byte, result_size> finalize() {
-            length_type const total_bits = (iterations_ * buffer_.size() + buffer_size_) << 3;
+            length_type total_bits = iterations_ * buffer_.size() + buffer_size_;
+            total_bits *= static_cast<std::uint8_t>(CHAR_BIT);
             length_type total_be = total_bits;
             if constexpr (std::endian::native == std::endian::little) {
                 if constexpr (std::is_same_v<length_type, uint128_t>) {
