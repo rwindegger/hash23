@@ -13,11 +13,11 @@ add_library(
         hash23
         INTERFACE
         include/hash23/hash23.h
-        include/hash23/sha2_512.h
+        include/hash23/crc32.h
         include/hash23/fnv_1.h
         include/hash23/fnv_1a.h
-        include/hash23/crc32.h
         include/hash23/md5.h
+        include/hash23/sha2.h
 )
 add_library(hash23::hash23 ALIAS hash23)
 
@@ -33,8 +33,8 @@ include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 CPMAddPackage(
         NAME bigint
         GITHUB_REPOSITORY rwindegger/bigint23
-        GIT_TAG v2.3
-        VERSION 2.3
+        GIT_TAG v2.4
+        VERSION 2.4
         OPTIONS "BUILD_TESTING OFF"
 )
 

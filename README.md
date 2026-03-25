@@ -12,6 +12,9 @@ A compact C++ hashing library with a simple `calculate(...)` API for checksums, 
 | FNV-1 | Non-cryptographic hash | `std::size_t` | 32 or 64 bits | Lightweight hashing for tables and identifiers | Output width depends on the target platform |
 | FNV-1a | Non-cryptographic hash | `std::size_t` | 32 or 64 bits | General-purpose fast hashing | Usually preferred over FNV-1 for better distribution |
 | MD5 | Cryptographic hash (legacy) | `std::array<std::byte, 16>` | 128 bits | Legacy compatibility and test vectors | Broken for security-sensitive use |
+| SHA2-224 | Cryptographic hash | `std::array<std::byte, 28>` | 224 bits | Compact modern cryptographic hashing | Smaller SHA2 digest with lower security margin than SHA2-256 and above |
+| SHA2-256 | Cryptographic hash | `std::array<std::byte, 32>` | 256 bits | General-purpose cryptographic hashing | Common modern default with a balanced digest size |
+| SHA2-384 | Cryptographic hash | `std::array<std::byte, 48>` | 384 bits | Strong cryptographic hashing with a mid-sized digest | Larger digest than SHA2-256 with less overhead than SHA2-512 |
 | SHA2-512 | Cryptographic hash | `std::array<std::byte, 64>` | 512 bits | Strong integrity and security-oriented hashing | Larger digest and more computation than the non-cryptographic options |
 
 ## Usage
@@ -38,7 +41,7 @@ For string literals, the terminating null byte is excluded automatically.
 
 ### Formatting digest output
 
-`MD5` and `SHA2-512` return `std::array<std::byte, N>`. If you want a hexadecimal string for printing or comparisons, a helper like this is useful:
+`MD5` and the `SHA2-*` algorithms return `std::array<std::byte, N>`. If you want a hexadecimal string for printing or comparisons, a helper like this is useful:
 
 ```cpp
 #include <array>
@@ -135,6 +138,57 @@ auto const md5_hex = to_hex(md5);
 // md5_hex == "9e107d9d372bb6826bd81d3542a419d6"
 ```
 
+### SHA2-224
+
+SHA2-224 is the shortest SHA2 variant provided by `hash23`. It produces a 224-bit digest and is useful when you want a modern cryptographic hash with less output than SHA2-256 while still staying within the SHA2 family.
+
+- Returns `std::array<std::byte, 28>`
+- Compact 224-bit SHA2 digest
+- Useful when you want a smaller modern digest
+- Lower security margin than the longer SHA2 variants
+
+```cpp
+#include <hash23/hash23.h>
+
+auto const sha2 = hash23::sha2_224::calculate("Hello, World!");
+auto const sha2_hex = to_hex(sha2);
+// sha2_hex == "72a23dfa411ba6fde01dbfabf3b00a709c93ebf273dc29e2d8b261ff"
+```
+
+### SHA2-256
+
+SHA2-256 is a widely used modern cryptographic hash and often the default SHA2 choice when you want a strong digest without the larger output size of SHA2-384 or SHA2-512.
+
+- Returns `std::array<std::byte, 32>`
+- Well-balanced 256-bit digest
+- Suitable for general-purpose integrity verification and cryptographic hashing
+- Commonly preferred when SHA2 compatibility matters and 256 bits are sufficient
+
+```cpp
+#include <hash23/hash23.h>
+
+auto const sha2 = hash23::sha2_256::calculate("Hello, World!");
+auto const sha2_hex = to_hex(sha2);
+// sha2_hex == "dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f"
+```
+
+### SHA2-384
+
+SHA2-384 offers a larger digest than SHA2-256 while remaining shorter than SHA2-512. It is a good fit when you want a stronger margin than SHA2-256 but do not need the full 512-bit output.
+
+- Returns `std::array<std::byte, 48>`
+- Strong 384-bit digest
+- Useful for higher-assurance integrity checks and cryptographic hashing
+- Middle ground between SHA2-256 and SHA2-512 in digest size and cost
+
+```cpp
+#include <hash23/hash23.h>
+
+auto const sha2 = hash23::sha2_384::calculate("Hello, World!");
+auto const sha2_hex = to_hex(sha2);
+// sha2_hex == "5485cc9b3365b4305dfb4e8337e0a598a574f8242bf17289e0dd6c20a3cd44a089de16ab4ab308f63e44b1170eb5f515"
+```
+
 ### SHA2-512
 
 SHA2-512 is the strongest algorithm currently provided by `hash23`. It produces a 512-bit digest and is the best option in this library when you need a modern cryptographic hash for integrity or security-focused workflows.
@@ -158,6 +212,9 @@ auto const sha2_hex = to_hex(sha2);
 - Use `FNV-1a` for lightweight, non-cryptographic hashing.
 - Use `FNV-1` only when you specifically need that variant.
 - Use `MD5` for compatibility with existing MD5-based systems or fixtures.
+- Use `SHA2-224` when you want the smallest SHA2-family digest.
+- Use `SHA2-256` as a good general-purpose modern cryptographic hash.
+- Use `SHA2-384` when you want a larger digest without going all the way to SHA2-512.
 - Use `SHA2-512` when you need a modern cryptographic hash from this library.
 
 ## Contributing
