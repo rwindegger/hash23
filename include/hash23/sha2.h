@@ -334,7 +334,7 @@ namespace hash23 {
 
         constexpr void transform() {
             std::array<hash_type, detail::sha2::sha2_impl<sha2_mode>::look_up_table_size> w{};
-            uint8_t const *tblock = buffer_.data();
+            std::uint8_t const *tblock = buffer_.data();
             for (std::size_t j = 0; j < 16; ++j) {
                 w[j] = detail::sha2::sha2_impl<sha2_mode>::to_big_endian(
                     &tblock[j << detail::sha2::sha2_impl<sha2_mode>::left_shift]);
@@ -403,21 +403,25 @@ namespace hash23 {
         }
 
         [[nodiscard]] constexpr std::array<std::byte, result_size> finalize() {
-            uint128_t const total_bits = (iterations_ * buffer_.size() + buffer_size_) << 3;
-            uint128_t total_be = total_bits;
+            length_type const total_bits = (iterations_ * buffer_.size() + buffer_size_) << 3;
+            length_type total_be = total_bits;
             if constexpr (std::endian::native == std::endian::little) {
-                total_be = bigint::byteswap(total_be);
+                if constexpr (std::is_same_v<length_type, uint128_t>) {
+                    total_be = bigint::byteswap(total_be);
+                } else {
+                    total_be = std::byteswap(total_be);
+                }
             }
             std::fill_n(buffer_.data() + buffer_size_, buffer_.size() - buffer_size_, 0);
             buffer_[buffer_size_] = 0x80;
-            if (buffer_size_ < buffer_.size() - 16) {
-                auto temp = std::bit_cast<std::array<std::uint8_t, 16> >(total_be);
+            if (buffer_size_ < buffer_.size() - sizeof(length_type)) {
+                auto temp = std::bit_cast<std::array<std::uint8_t, sizeof(length_type)> >(total_be);
                 std::copy_n(temp.data(), temp.size(), buffer_.data() + buffer_.size() - temp.size());
                 transform();
             } else {
                 transform();
                 std::fill_n(buffer_.data(), buffer_.size(), 0);
-                auto temp = std::bit_cast<std::array<std::uint8_t, 16> >(total_be);
+                auto temp = std::bit_cast<std::array<std::uint8_t, sizeof(length_type)> >(total_be);
                 std::copy_n(temp.data(), temp.size(), buffer_.data() + buffer_.size() - temp.size());
                 transform();
             }
