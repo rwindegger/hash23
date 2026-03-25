@@ -34,7 +34,7 @@ jobs:
             -DCMAKE_CROSSCOMPILING_EMULATOR="qemu-s390x -L /usr/s390x-linux-gnu"
 
       - name: Build
-        run: cmake --build build-s390x
+        run: cmake --build ${{ github.workspace }}/build-s390x
 
       - name: Test
-        run: ctest --test-dir build-s390x --output-on-failure
+        run: ctest --test-dir ${{ github.workspace }}/build-s390x --output-on-failure
