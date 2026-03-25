@@ -31,7 +31,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_C_COMPILER=s390x-linux-gnu-gcc \
             -DCMAKE_CXX_COMPILER=s390x-linux-gnu-g++ \
-            -DCMAKE_CROSSCOMPILING_EMULATOR=qemu-s390x;-L;/usr/s390x-linux-gnu
+            -DCMAKE_CROSSCOMPILING_EMULATOR="qemu-s390x -L /usr/s390x-linux-gnu"
 
       - name: Build
         run: cmake --build build-s390x
