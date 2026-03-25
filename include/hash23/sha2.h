@@ -358,7 +358,7 @@ namespace hash23 {
                 v[1] = v[0];
                 v[0] = t + u;
             }
-            for (size_t j = 0; j < 8; ++j) {
+            for (std::size_t j = 0; j < 8; ++j) {
                 hash_[j] += v[j];
             }
         }
