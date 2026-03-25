@@ -73,13 +73,10 @@ namespace hash23 {
             }
 
             [[nodiscard]] static constexpr hash_type to_big_endian(std::uint8_t const *b) {
-                if constexpr (std::endian::native == std::endian::big) {
-                    return static_cast<hash_type>(*((b) + 0)) | static_cast<hash_type>(*((b) + 1)) << 8 |
-                           static_cast<hash_type>(*((b) + 2)) << 16 | static_cast<hash_type>(*((b) + 3)) << 24;
-                } else {
-                    return static_cast<hash_type>(*((b) + 3)) | static_cast<hash_type>(*((b) + 2)) << 8 |
-                           static_cast<hash_type>(*((b) + 1)) << 16 | static_cast<hash_type>(*((b) + 0)) << 24;
-                }
+                return (static_cast<hash_type>(b[0]) << 24) |
+                       (static_cast<hash_type>(b[1]) << 16) |
+                       (static_cast<hash_type>(b[2]) << 8) |
+                       (static_cast<hash_type>(b[3]));
             }
 
             [[nodiscard]] static constexpr hash_type shift_right(hash_type const value, std::size_t const count) {
@@ -215,17 +212,14 @@ namespace hash23 {
             }
 
             [[nodiscard]] static constexpr hash_type to_big_endian(std::uint8_t const *b) {
-                if constexpr (std::endian::native == std::endian::big) {
-                    return static_cast<hash_type>(*((b) + 0)) | static_cast<uint64_t>(*((b) + 1)) << 8 |
-                           static_cast<hash_type>(*((b) + 2)) << 16 | static_cast<uint64_t>(*((b) + 3)) << 24 |
-                           static_cast<hash_type>(*((b) + 4)) << 32 | static_cast<uint64_t>(*((b) + 5)) << 40 |
-                           static_cast<hash_type>(*((b) + 6)) << 48 | static_cast<uint64_t>(*((b) + 7)) << 56;
-                } else {
-                    return static_cast<hash_type>(*((b) + 7)) | static_cast<hash_type>(*((b) + 6)) << 8 |
-                           static_cast<hash_type>(*((b) + 5)) << 16 | static_cast<hash_type>(*((b) + 4)) << 24 |
-                           static_cast<hash_type>(*((b) + 3)) << 32 | static_cast<hash_type>(*((b) + 2)) << 40 |
-                           static_cast<hash_type>(*((b) + 1)) << 48 | static_cast<hash_type>(*((b) + 0)) << 56;
-                }
+                return (static_cast<hash_type>(b[0]) << 56) |
+                       (static_cast<hash_type>(b[1]) << 48) |
+                       (static_cast<hash_type>(b[2]) << 40) |
+                       (static_cast<hash_type>(b[3]) << 32) |
+                       (static_cast<hash_type>(b[4]) << 24) |
+                       (static_cast<hash_type>(b[5]) << 16) |
+                       (static_cast<hash_type>(b[6]) << 8) |
+                       (static_cast<hash_type>(b[7]));
             }
 
             [[nodiscard]] static constexpr hash_type shift_right(hash_type const value, std::size_t const count) {
