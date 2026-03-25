@@ -145,22 +145,22 @@ namespace hash23 {
             std::fill_n(buffer_.data() + buffer_size_, buffer_.size() - buffer_size_, 0);
             buffer_[buffer_size_] = 0x80;
             if (buffer_size_ < buffer_.size() - 8) {
-                auto temp = std::bit_cast<std::array<std::uint8_t, 8> >(total_bits);
+                auto temp = std::bit_cast<std::array<std::uint8_t, 8> >(to_little_endian(total_bits));
                 std::copy_n(temp.data(), temp.size(), buffer_.data() + buffer_.size() - temp.size());
                 transform();
             } else {
                 transform();
                 std::fill_n(buffer_.data(), buffer_.size(), 0);
-                auto temp = std::bit_cast<std::array<std::uint8_t, 8> >(total_bits);
+                auto temp = std::bit_cast<std::array<std::uint8_t, 8> >(to_little_endian(total_bits));
                 std::copy_n(temp.data(), temp.size(), buffer_.data() + buffer_.size() - temp.size());
                 transform();
             }
 
             std::array<std::byte, 16> result{};
-            auto temp_a = std::bit_cast<std::array<std::byte, 4> >(a0_);
-            auto temp_b = std::bit_cast<std::array<std::byte, 4> >(b0_);
-            auto temp_c = std::bit_cast<std::array<std::byte, 4> >(c0_);
-            auto temp_d = std::bit_cast<std::array<std::byte, 4> >(d0_);
+            auto temp_a = std::bit_cast<std::array<std::byte, 4> >(to_little_endian(a0_));
+            auto temp_b = std::bit_cast<std::array<std::byte, 4> >(to_little_endian(b0_));
+            auto temp_c = std::bit_cast<std::array<std::byte, 4> >(to_little_endian(c0_));
+            auto temp_d = std::bit_cast<std::array<std::byte, 4> >(to_little_endian(d0_));
             std::copy_n(temp_a.data(), temp_a.size(), result.data() + 0);
             std::copy_n(temp_b.data(), temp_b.size(), result.data() + 4);
             std::copy_n(temp_c.data(), temp_c.size(), result.data() + 8);
