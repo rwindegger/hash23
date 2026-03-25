@@ -7,11 +7,14 @@ include(GoogleTest)
 add_executable(
         hash23_tests
         main.cpp
-        sha2_512_tests.cpp
+        crc32_tests.cpp
         fnv_1_tests.cpp
         fnv_1a_tests.cpp
-        crc32_tests.cpp
         md5_tests.cpp
+        sha2_224_tests.cpp
+        sha2_256_tests.cpp
+        sha2_384_tests.cpp
+        sha2_512_tests.cpp
 )
 
 if(MSVC)
