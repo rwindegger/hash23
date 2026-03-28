@@ -15,14 +15,14 @@
 namespace hash23 {
     class md5 {
     private:
-        static constexpr std::array<int, 64> s = {
+        static constexpr auto s = std::array<int, 64>{
             7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
             5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
             4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
             6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
         };
 
-        static constexpr std::array<std::uint32_t, 64> K = {
+        static constexpr auto K = std::array<std::uint32_t, 64>{
             0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
             0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
             0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -66,10 +66,10 @@ namespace hash23 {
                 M[i] = to_little_endian(M[i]);
             }
 
-            std::uint32_t A = a0_;
-            std::uint32_t B = b0_;
-            std::uint32_t C = c0_;
-            std::uint32_t D = d0_;
+            auto A = a0_;
+            auto B = b0_;
+            auto C = c0_;
+            auto D = d0_;
 
             for (auto i = 0; i < 64; ++i) {
                 std::uint32_t F{};
@@ -106,11 +106,11 @@ namespace hash23 {
                      and (sizeof(std::ranges::range_value_t<T>) == 1)
         constexpr void update(T const &data) {
             auto const *const data_ptr = std::ranges::data(data);
-            std::size_t const data_size = std::ranges::size(data);
-            std::size_t const remaining = buffer_.size() - buffer_size_;
-            std::size_t const copy_bytes = std::min(data_size, remaining);
+            auto const data_size = std::ranges::size(data);
+            auto const remaining = buffer_.size() - buffer_size_;
+            auto const copy_bytes = std::min(data_size, remaining);
             // Manual byte copy for constexpr
-            for (std::size_t i = 0; i < copy_bytes; ++i) {
+            for (auto i = 0uz; i < copy_bytes; ++i) {
                 buffer_[buffer_size_ + i] = static_cast<std::uint8_t>(data_ptr[i]);
             }
             buffer_size_ += copy_bytes;
@@ -122,26 +122,26 @@ namespace hash23 {
             transform();
             ++iterations_;
 
-            std::size_t offset = copy_bytes;
-            std::size_t const block_size = buffer_.size();
-            std::size_t const full_blocks = (data_size - copy_bytes) / block_size;
-            for (std::size_t i = 0; i < full_blocks; ++i) {
-                for (std::size_t j = 0; j < block_size; ++j) {
+            auto offset = copy_bytes;
+            auto const block_size = buffer_.size();
+            auto const full_blocks = (data_size - copy_bytes) / block_size;
+            for (auto i = 0uz; i < full_blocks; ++i) {
+                for (auto j = 0uz; j < block_size; ++j) {
                     buffer_[j] = static_cast<std::uint8_t>(data_ptr[offset + j]);
                 }
                 transform();
                 offset += block_size;
                 ++iterations_;
             }
-            std::size_t const leftover = data_size - offset;
-            for (std::size_t i = 0; i < leftover; ++i) {
+            auto const leftover = data_size - offset;
+            for (auto i = 0uz; i < leftover; ++i) {
                 buffer_[i] = static_cast<std::uint8_t>(data_ptr[offset + i]);
             }
             buffer_size_ = leftover;
         }
 
         [[nodiscard]] constexpr std::array<std::byte, 16> finalize() {
-            std::uint64_t const total_bits = (iterations_ * buffer_.size() + buffer_size_) << 3;
+            auto const total_bits = (iterations_ * buffer_.size() + buffer_size_) << 3;
             std::fill_n(buffer_.data() + buffer_size_, buffer_.size() - buffer_size_, 0);
             buffer_[buffer_size_] = 0x80;
             if (buffer_size_ < buffer_.size() - 8) {

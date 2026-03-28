@@ -28,7 +28,7 @@ namespace hash23 {
 
     class crc32 {
     private:
-        static constexpr std::array<std::uint32_t, 256> crc_table = detail::crc32::calculate_table();
+        static constexpr auto crc_table = detail::crc32::calculate_table();
         std::uint32_t hash_ = 0xFFFFFFFF;
 
         template<typename T>

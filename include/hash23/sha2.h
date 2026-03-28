@@ -28,22 +28,22 @@ namespace hash23 {
         template<sha2_mode sha2_mode>
         class sha2_impl {
         public:
-            static constexpr bool is_valid = false;
+            static constexpr auto is_valid = false;
         };
 
         template<>
         class sha2_impl<sha2_mode::SHA2_256> {
         public:
-            static constexpr bool is_valid = true;
-            static constexpr std::size_t result_size = 32;
-            static constexpr std::size_t block_size = 64;
-            static constexpr std::size_t look_up_table_size = 64;
-            static constexpr std::size_t left_shift = 2;
+            static constexpr auto is_valid = true;
+            static constexpr auto result_size = 32uz;
+            static constexpr auto block_size = 64uz;
+            static constexpr auto look_up_table_size = 64uz;
+            static constexpr auto left_shift = 2uz;
 
             using length_type = std::uint64_t;
             using hash_type = std::uint32_t;
 
-            static constexpr std::array<hash_type, look_up_table_size> look_up_table{
+            static constexpr auto look_up_table = std::array<hash_type, look_up_table_size>{
                 0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
                 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
                 0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
@@ -54,7 +54,7 @@ namespace hash23 {
                 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
             };
 
-            static constexpr std::array<hash_type, 8> initial_hash_values{
+            static constexpr auto initial_hash_values = std::array<hash_type, 8>{
                 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
                 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
             };
@@ -103,19 +103,18 @@ namespace hash23 {
         template<>
         class sha2_impl<sha2_mode::SHA2_224> {
         public:
-            static constexpr bool is_valid = true;
-            static constexpr std::size_t result_size = 28;
-            static constexpr std::size_t block_size = sha2_impl<sha2_mode::SHA2_256>::block_size;
-            static constexpr std::size_t look_up_table_size = sha2_impl<sha2_mode::SHA2_256>::look_up_table_size;
-            static constexpr std::size_t left_shift = sha2_impl<sha2_mode::SHA2_256>::left_shift;
+            static constexpr auto is_valid = true;
+            static constexpr auto result_size = 28uz;
+            static constexpr auto block_size = sha2_impl<sha2_mode::SHA2_256>::block_size;
+            static constexpr auto look_up_table_size = sha2_impl<sha2_mode::SHA2_256>::look_up_table_size;
+            static constexpr auto left_shift = sha2_impl<sha2_mode::SHA2_256>::left_shift;
 
             using length_type = sha2_impl<sha2_mode::SHA2_256>::length_type;
             using hash_type = sha2_impl<sha2_mode::SHA2_256>::hash_type;
 
-            static constexpr std::array<hash_type, look_up_table_size> look_up_table = sha2_impl<
-                sha2_mode::SHA2_256>::look_up_table;
+            static constexpr auto look_up_table = sha2_impl<sha2_mode::SHA2_256>::look_up_table;
 
-            static constexpr std::array<hash_type, 8> initial_hash_values{
+            static constexpr auto initial_hash_values = std::array<hash_type, 8>{
                 0xc1059ed8, 0x367cd507, 0x3070dd17, 0xf70e5939,
                 0xffc00b31, 0x68581511, 0x64f98fa7, 0xbefa4fa4
             };
@@ -157,16 +156,16 @@ namespace hash23 {
         template<>
         class sha2_impl<sha2_mode::SHA2_512> {
         public:
-            static constexpr bool is_valid = true;
-            static constexpr std::size_t result_size = 64;
-            static constexpr std::size_t block_size = 128;
-            static constexpr std::size_t look_up_table_size = 80;
-            static constexpr std::size_t left_shift = 3;
+            static constexpr auto is_valid = true;
+            static constexpr auto result_size = 64uz;
+            static constexpr auto block_size = 128uz;
+            static constexpr auto look_up_table_size = 80uz;
+            static constexpr auto left_shift = 3uz;
 
             using length_type = bigint::bigint<bigint::BitWidth{128}, bigint::Signedness::Unsigned>;
             using hash_type = std::uint64_t;
 
-            static constexpr std::array<hash_type, look_up_table_size> look_up_table{
+            static constexpr auto look_up_table = std::array<hash_type, look_up_table_size>{
                 0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
                 0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
                 0xd807aa98a3030242, 0x12835b0145706fbe, 0x243185be4ee4b28c, 0x550c7dc3d5ffb4e2,
@@ -189,7 +188,7 @@ namespace hash23 {
                 0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817
             };
 
-            static constexpr std::array<hash_type, 8> initial_hash_values{
+            static constexpr auto initial_hash_values = std::array<hash_type, 8>{
                 0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
                 0x510e527fade682d1, 0x9b05688c2b3e6c1f, 0x1f83d9abfb41bd6b, 0x5be0cd19137e2179
             };
@@ -246,19 +245,18 @@ namespace hash23 {
         template<>
         class sha2_impl<sha2_mode::SHA2_384> {
         public:
-            static constexpr bool is_valid = true;
-            static constexpr std::size_t result_size = 48;
-            static constexpr std::size_t block_size = sha2_impl<sha2_mode::SHA2_512>::block_size;
-            static constexpr std::size_t look_up_table_size = sha2_impl<sha2_mode::SHA2_512>::look_up_table_size;
-            static constexpr std::size_t left_shift = sha2_impl<sha2_mode::SHA2_512>::left_shift;
+            static constexpr auto is_valid = true;
+            static constexpr auto result_size = 48uz;
+            static constexpr auto block_size = sha2_impl<sha2_mode::SHA2_512>::block_size;
+            static constexpr auto look_up_table_size = sha2_impl<sha2_mode::SHA2_512>::look_up_table_size;
+            static constexpr auto left_shift = sha2_impl<sha2_mode::SHA2_512>::left_shift;
 
             using length_type = sha2_impl<sha2_mode::SHA2_512>::length_type;
             using hash_type = sha2_impl<sha2_mode::SHA2_512>::hash_type;
 
-            static constexpr std::array<hash_type, look_up_table_size> look_up_table = sha2_impl<
-                sha2_mode::SHA2_512>::look_up_table;
+            static constexpr auto look_up_table = sha2_impl<sha2_mode::SHA2_512>::look_up_table;
 
-            static constexpr std::array<hash_type, 8> initial_hash_values{
+            static constexpr auto initial_hash_values = std::array<hash_type, 8>{
                 0xcbbb9d5dc1059ed8, 0x629a292a367cd507, 0x9159015a3070dd17, 0x152fecd8f70e5939,
                 0x67332667ffc00b31, 0x8eb44a8768581511, 0xdb0c2e0d64f98fa7, 0x47b5481dbefa4fa4
             };
@@ -328,21 +326,21 @@ namespace hash23 {
 
         constexpr void transform() {
             std::array<hash_type, detail::sha2::sha2_impl<sha2_mode>::look_up_table_size> w{};
-            std::uint8_t const *tblock = buffer_.data();
-            for (std::size_t j = 0; j < 16; ++j) {
+            auto const *tblock = buffer_.data();
+            for (auto j = 0uz; j < 16uz; ++j) {
                 w[j] = detail::sha2::sha2_impl<sha2_mode>::to_big_endian(
                     &tblock[j << detail::sha2::sha2_impl<sha2_mode>::left_shift]);
             }
-            for (std::size_t j = 16; j < detail::sha2::sha2_impl<sha2_mode>::look_up_table_size; ++j) {
+            for (auto j = 16uz; j < detail::sha2::sha2_impl<sha2_mode>::look_up_table_size; ++j) {
                 w[j] = detail::sha2::sha2_impl<sha2_mode>::small_sigma_1(w[j - 2]) + w[j - 7]
                        + detail::sha2::sha2_impl<sha2_mode>::small_sigma_0(w[j - 15]) + w[j - 16];
             }
             std::array<hash_type, 8> v = hash_;
-            for (std::size_t j = 0; j < detail::sha2::sha2_impl<sha2_mode>::look_up_table_size; ++j) {
-                hash_type const t = v[7] + detail::sha2::sha2_impl<sha2_mode>::big_sigma_1(v[4])
+            for (auto j = 0uz; j < detail::sha2::sha2_impl<sha2_mode>::look_up_table_size; ++j) {
+                auto const t = v[7] + detail::sha2::sha2_impl<sha2_mode>::big_sigma_1(v[4])
                                     + ch(v[4], v[5], v[6])
                                     + detail::sha2::sha2_impl<sha2_mode>::look_up_table[j] + w[j];
-                hash_type const u = detail::sha2::sha2_impl<sha2_mode>::big_sigma_0(v[0]) + maj(v[0], v[1], v[2]);
+                auto const u = detail::sha2::sha2_impl<sha2_mode>::big_sigma_0(v[0]) + maj(v[0], v[1], v[2]);
                 v[7] = v[6];
                 v[6] = v[5];
                 v[5] = v[4];
@@ -352,7 +350,7 @@ namespace hash23 {
                 v[1] = v[0];
                 v[0] = t + u;
             }
-            for (std::size_t j = 0; j < 8; ++j) {
+            for (auto j = 0uz; j < 8uz; ++j) {
                 hash_[j] += v[j];
             }
         }
@@ -363,11 +361,11 @@ namespace hash23 {
                      and (sizeof(std::ranges::range_value_t<T>) == 1)
         constexpr void update(T const &data) {
             auto const *const data_ptr = std::ranges::data(data);
-            std::size_t const data_size = std::ranges::size(data);
-            std::size_t const remaining = buffer_.size() - buffer_size_;
-            std::size_t const copy_bytes = std::min(data_size, remaining);
+            auto const data_size = std::ranges::size(data);
+            auto const remaining = buffer_.size() - buffer_size_;
+            auto const copy_bytes = std::min(data_size, remaining);
             // Manual byte copy for constexpr
-            for (std::size_t i = 0; i < copy_bytes; ++i) {
+            for (auto i = 0uz; i < copy_bytes; ++i) {
                 buffer_[buffer_size_ + i] = static_cast<std::uint8_t>(data_ptr[i]);
             }
             buffer_size_ += copy_bytes;
@@ -379,26 +377,26 @@ namespace hash23 {
             transform();
             ++iterations_;
 
-            std::size_t offset = copy_bytes;
-            std::size_t const full_blocks = (data_size - copy_bytes) / block_size;
-            for (std::size_t i = 0; i < full_blocks; ++i) {
-                for (std::size_t j = 0; j < block_size; ++j) {
+            auto offset = copy_bytes;
+            auto const full_blocks = (data_size - copy_bytes) / block_size;
+            for (auto i = 0uz; i < full_blocks; ++i) {
+                for (auto j = 0uz; j < block_size; ++j) {
                     buffer_[j] = static_cast<std::uint8_t>(data_ptr[offset + j]);
                 }
                 transform();
                 offset += block_size;
                 ++iterations_;
             }
-            std::size_t const leftover = data_size - offset;
-            for (std::size_t i = 0; i < leftover; ++i) {
+            auto const leftover = data_size - offset;
+            for (auto i = 0uz; i < leftover; ++i) {
                 buffer_[i] = static_cast<std::uint8_t>(data_ptr[offset + i]);
             }
             buffer_size_ = leftover;
         }
 
         [[nodiscard]] constexpr std::array<std::byte, result_size> finalize() {
-            length_type const total_bits = (iterations_ * buffer_.size() + buffer_size_) << 3;
-            length_type total_be = total_bits;
+            auto const total_bits = (iterations_ * buffer_.size() + buffer_size_) << 3;
+            auto total_be = total_bits;
             if constexpr (std::endian::native == std::endian::little) {
                 if constexpr (std::is_same_v<length_type, uint128_t>) {
                     total_be = bigint::byteswap(total_be);
