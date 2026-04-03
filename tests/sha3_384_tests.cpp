@@ -9,6 +9,29 @@
 #include <hash23/hash23.h>
 
 namespace {
+    TEST(sha3_384, empty_input_test) {
+        auto const actual = hash23::sha3_384::calculate("");
+        constexpr std::array expected = {
+            static_cast<std::byte>(0x0c), static_cast<std::byte>(0x63), static_cast<std::byte>(0xa7),
+            static_cast<std::byte>(0x5b), static_cast<std::byte>(0x84), static_cast<std::byte>(0x5e),
+            static_cast<std::byte>(0x4f), static_cast<std::byte>(0x7d), static_cast<std::byte>(0x01),
+            static_cast<std::byte>(0x10), static_cast<std::byte>(0x7d), static_cast<std::byte>(0x85),
+            static_cast<std::byte>(0x2e), static_cast<std::byte>(0x4c), static_cast<std::byte>(0x24),
+            static_cast<std::byte>(0x85), static_cast<std::byte>(0xc5), static_cast<std::byte>(0x1a),
+            static_cast<std::byte>(0x50), static_cast<std::byte>(0xaa), static_cast<std::byte>(0xaa),
+            static_cast<std::byte>(0x94), static_cast<std::byte>(0xfc), static_cast<std::byte>(0x61),
+            static_cast<std::byte>(0x99), static_cast<std::byte>(0x5e), static_cast<std::byte>(0x71),
+            static_cast<std::byte>(0xbb), static_cast<std::byte>(0xee), static_cast<std::byte>(0x98),
+            static_cast<std::byte>(0x3a), static_cast<std::byte>(0x2a), static_cast<std::byte>(0xc3),
+            static_cast<std::byte>(0x71), static_cast<std::byte>(0x38), static_cast<std::byte>(0x31),
+            static_cast<std::byte>(0x26), static_cast<std::byte>(0x4a), static_cast<std::byte>(0xdb),
+            static_cast<std::byte>(0x47), static_cast<std::byte>(0xfb), static_cast<std::byte>(0x6b),
+            static_cast<std::byte>(0xd1), static_cast<std::byte>(0xe0), static_cast<std::byte>(0x58),
+            static_cast<std::byte>(0xd5), static_cast<std::byte>(0xf0), static_cast<std::byte>(0x04),
+        };
+        EXPECT_EQ(expected, actual);
+    }
+
     TEST(sha3_384, single_block_test) {
         auto const actual = hash23::sha3_384::calculate("Hello, World!");
         constexpr std::array expected = {

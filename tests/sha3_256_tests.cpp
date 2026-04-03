@@ -9,6 +9,24 @@
 #include <hash23/hash23.h>
 
 namespace {
+    TEST(sha3_256, empty_input_test) {
+        auto const actual = hash23::sha3_256::calculate("");
+        constexpr std::array expected = {
+            static_cast<std::byte>(0xa7), static_cast<std::byte>(0xff), static_cast<std::byte>(0xc6),
+            static_cast<std::byte>(0xf8), static_cast<std::byte>(0xbf), static_cast<std::byte>(0x1e),
+            static_cast<std::byte>(0xd7), static_cast<std::byte>(0x66), static_cast<std::byte>(0x51),
+            static_cast<std::byte>(0xc1), static_cast<std::byte>(0x47), static_cast<std::byte>(0x56),
+            static_cast<std::byte>(0xa0), static_cast<std::byte>(0x61), static_cast<std::byte>(0xd6),
+            static_cast<std::byte>(0x62), static_cast<std::byte>(0xf5), static_cast<std::byte>(0x80),
+            static_cast<std::byte>(0xff), static_cast<std::byte>(0x4d), static_cast<std::byte>(0xe4),
+            static_cast<std::byte>(0x3b), static_cast<std::byte>(0x49), static_cast<std::byte>(0xfa),
+            static_cast<std::byte>(0x82), static_cast<std::byte>(0xd8), static_cast<std::byte>(0x0a),
+            static_cast<std::byte>(0x4b), static_cast<std::byte>(0x80), static_cast<std::byte>(0xf8),
+            static_cast<std::byte>(0x43), static_cast<std::byte>(0x4a),
+        };
+        EXPECT_EQ(expected, actual);
+    }
+
     TEST(sha3_256, single_block_test) {
         auto const actual = hash23::sha3_256::calculate("Hello, World!");
         constexpr std::array expected = {
