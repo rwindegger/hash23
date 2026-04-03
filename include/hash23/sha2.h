@@ -300,18 +300,18 @@ namespace hash23 {
         };
     }
 
-    template<sha2_mode sha2_mode>
+    template<sha2_mode mode>
     class sha2 {
     private:
-        static_assert(detail::sha2::sha2_impl<sha2_mode>::is_valid, "Invalid SHA2 mode");
+        static_assert(detail::sha2::sha2_impl<mode>::is_valid, "Invalid SHA2 mode");
 
-        static constexpr std::size_t result_size = detail::sha2::sha2_impl<sha2_mode>::result_size;
-        static constexpr std::size_t block_size = detail::sha2::sha2_impl<sha2_mode>::block_size;
+        static constexpr std::size_t result_size = detail::sha2::sha2_impl<mode>::result_size;
+        static constexpr std::size_t block_size = detail::sha2::sha2_impl<mode>::block_size;
 
-        using length_type = detail::sha2::sha2_impl<sha2_mode>::length_type;
-        using hash_type = detail::sha2::sha2_impl<sha2_mode>::hash_type;
+        using length_type = detail::sha2::sha2_impl<mode>::length_type;
+        using hash_type = detail::sha2::sha2_impl<mode>::hash_type;
 
-        std::array<hash_type, 8> hash_ = detail::sha2::sha2_impl<sha2_mode>::initial_hash_values;
+        std::array<hash_type, 8> hash_ = detail::sha2::sha2_impl<mode>::initial_hash_values;
         length_type iterations_ = 0;
         std::size_t buffer_size_ = 0;
         std::array<std::uint8_t, block_size> buffer_{};
@@ -325,22 +325,22 @@ namespace hash23 {
         }
 
         constexpr void transform() {
-            std::array<hash_type, detail::sha2::sha2_impl<sha2_mode>::look_up_table_size> w{};
+            std::array<hash_type, detail::sha2::sha2_impl<mode>::look_up_table_size> w{};
             auto const *tblock = buffer_.data();
             for (auto j = 0uz; j < 16uz; ++j) {
-                w[j] = detail::sha2::sha2_impl<sha2_mode>::to_big_endian(
-                    &tblock[j << detail::sha2::sha2_impl<sha2_mode>::left_shift]);
+                w[j] = detail::sha2::sha2_impl<mode>::to_big_endian(
+                    &tblock[j << detail::sha2::sha2_impl<mode>::left_shift]);
             }
-            for (auto j = 16uz; j < detail::sha2::sha2_impl<sha2_mode>::look_up_table_size; ++j) {
-                w[j] = detail::sha2::sha2_impl<sha2_mode>::small_sigma_1(w[j - 2]) + w[j - 7]
-                       + detail::sha2::sha2_impl<sha2_mode>::small_sigma_0(w[j - 15]) + w[j - 16];
+            for (auto j = 16uz; j < detail::sha2::sha2_impl<mode>::look_up_table_size; ++j) {
+                w[j] = detail::sha2::sha2_impl<mode>::small_sigma_1(w[j - 2]) + w[j - 7]
+                       + detail::sha2::sha2_impl<mode>::small_sigma_0(w[j - 15]) + w[j - 16];
             }
             std::array<hash_type, 8> v = hash_;
-            for (auto j = 0uz; j < detail::sha2::sha2_impl<sha2_mode>::look_up_table_size; ++j) {
-                auto const t = v[7] + detail::sha2::sha2_impl<sha2_mode>::big_sigma_1(v[4])
+            for (auto j = 0uz; j < detail::sha2::sha2_impl<mode>::look_up_table_size; ++j) {
+                auto const t = v[7] + detail::sha2::sha2_impl<mode>::big_sigma_1(v[4])
                                     + ch(v[4], v[5], v[6])
-                                    + detail::sha2::sha2_impl<sha2_mode>::look_up_table[j] + w[j];
-                auto const u = detail::sha2::sha2_impl<sha2_mode>::big_sigma_0(v[0]) + maj(v[0], v[1], v[2]);
+                                    + detail::sha2::sha2_impl<mode>::look_up_table[j] + w[j];
+                auto const u = detail::sha2::sha2_impl<mode>::big_sigma_0(v[0]) + maj(v[0], v[1], v[2]);
                 v[7] = v[6];
                 v[6] = v[5];
                 v[5] = v[4];
@@ -418,7 +418,7 @@ namespace hash23 {
                 transform();
             }
 
-            return detail::sha2::sha2_impl<sha2_mode>::finish_result(hash_);
+            return detail::sha2::sha2_impl<mode>::finish_result(hash_);
         }
 
     public:

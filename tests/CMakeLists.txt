@@ -15,6 +15,10 @@ add_executable(
         sha2_256_tests.cpp
         sha2_384_tests.cpp
         sha2_512_tests.cpp
+        sha3_224_tests.cpp
+        sha3_256_tests.cpp
+        sha3_384_tests.cpp
+        sha3_512_tests.cpp
 )
 
 if(MSVC)

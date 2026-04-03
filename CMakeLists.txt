@@ -18,6 +18,7 @@ add_library(
         include/hash23/fnv_1a.h
         include/hash23/md5.h
         include/hash23/sha2.h
+        include/hash23/sha3.h
 )
 add_library(hash23::hash23 ALIAS hash23)
 
