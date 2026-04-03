@@ -16,6 +16,10 @@ A compact C++ hashing library with a simple `calculate(...)` API for checksums, 
 | SHA2-256 | Cryptographic hash | `std::array<std::byte, 32>` | 256 bits | General-purpose cryptographic hashing | Common modern default with a balanced digest size |
 | SHA2-384 | Cryptographic hash | `std::array<std::byte, 48>` | 384 bits | Strong cryptographic hashing with a mid-sized digest | Larger digest than SHA2-256 with less overhead than SHA2-512 |
 | SHA2-512 | Cryptographic hash | `std::array<std::byte, 64>` | 512 bits | Strong integrity and security-oriented hashing | Larger digest and more computation than the non-cryptographic options |
+| SHA3-224 | Cryptographic hash | `std::array<std::byte, 28>` | 224 bits | Compact modern cryptographic hashing | Based on Keccak sponge; different design from SHA2 |
+| SHA3-256 | Cryptographic hash | `std::array<std::byte, 32>` | 256 bits | General-purpose cryptographic hashing | Drop-in complement to SHA2-256 with a different internal structure |
+| SHA3-384 | Cryptographic hash | `std::array<std::byte, 48>` | 384 bits | Strong cryptographic hashing with a mid-sized digest | Larger digest than SHA3-256 with the Keccak sponge construction |
+| SHA3-512 | Cryptographic hash | `std::array<std::byte, 64>` | 512 bits | Strong integrity and security-oriented hashing | Strongest SHA3 variant; largest digest in this library |
 
 ## Usage
 
@@ -41,7 +45,7 @@ For string literals, the terminating null byte is excluded automatically.
 
 ### Formatting digest output
 
-`MD5` and the `SHA2-*` algorithms return `std::array<std::byte, N>`. If you want a hexadecimal string for printing or comparisons, a helper like this is useful:
+`MD5`, the `SHA2-*`, and the `SHA3-*` algorithms return `std::array<std::byte, N>`. If you want a hexadecimal string for printing or comparisons, a helper like this is useful:
 
 ```cpp
 #include <array>
@@ -206,6 +210,74 @@ auto const sha2_hex = to_hex(sha2);
 // sha2_hex == "374d794a95cdcfd8b35993185fef9ba368f160d8daf432d08ba9f1ed1e5abe6cc69291e0fa2fe0006a52570ef18c19def4e617c33ce52ef0a6e5fbe318cb0387"
 ```
 
+### SHA3-224
+
+SHA3-224 is the shortest SHA3 variant provided by `hash23`. It uses the Keccak sponge construction standardised in FIPS 202 and is architecturally independent from the SHA2 family, providing an alternative when you need a compact modern digest.
+
+- Returns `std::array<std::byte, 28>`
+- Compact 224-bit SHA3 digest
+- Useful when you want a smaller digest from the SHA3 family
+- Lower security margin than the longer SHA3 variants
+
+```cpp
+#include <hash23/hash23.h>
+
+auto const sha3 = hash23::sha3_224::calculate("Hello, World!");
+auto const sha3_hex = to_hex(sha3);
+// sha3_hex == "853048fb8b11462b6100385633c0cc8dcddc6e2b8e376c28102bc84f2"
+```
+
+### SHA3-256
+
+SHA3-256 produces a 256-bit digest using the Keccak sponge construction. It is a natural alternative to SHA2-256 when you want the same output size but prefer a structurally different algorithm.
+
+- Returns `std::array<std::byte, 32>`
+- Well-balanced 256-bit digest
+- Good general-purpose choice within the SHA3 family
+- Different internal design from SHA2-256, making it useful for algorithm diversity
+
+```cpp
+#include <hash23/hash23.h>
+
+auto const sha3 = hash23::sha3_256::calculate("Hello, World!");
+auto const sha3_hex = to_hex(sha3);
+// sha3_hex == "1af17a664e3fa8e419b8ba05c2a173169df76162a5a286e0c405b460d478f7ef"
+```
+
+### SHA3-384
+
+SHA3-384 offers a larger digest than SHA3-256 while remaining shorter than SHA3-512. It is a good fit when you want a stronger margin than SHA3-256 but do not need the full 512-bit output.
+
+- Returns `std::array<std::byte, 48>`
+- Strong 384-bit SHA3 digest
+- Useful for higher-assurance integrity checks
+- Middle ground between SHA3-256 and SHA3-512 in digest size
+
+```cpp
+#include <hash23/hash23.h>
+
+auto const sha3 = hash23::sha3_384::calculate("Hello, World!");
+auto const sha3_hex = to_hex(sha3);
+// sha3_hex == "aa9ad8a49f31d2ddcabbb7010a1566417cff803fef50eba239558826f872e468c5743e7f026b0a8e5b2d7a1cc465cdbe"
+```
+
+### SHA3-512
+
+SHA3-512 is the strongest SHA3 algorithm provided by `hash23`. It produces a 512-bit digest using the Keccak sponge construction and is the best option when you need a modern cryptographic hash with maximum digest size.
+
+- Returns `std::array<std::byte, 64>`
+- Strong 512-bit SHA3 digest
+- Suitable for integrity verification and security-oriented hashing
+- Largest digest in the library; pairs well with SHA2-512 for algorithm agility
+
+```cpp
+#include <hash23/hash23.h>
+
+auto const sha3 = hash23::sha3_512::calculate("Hello, World!");
+auto const sha3_hex = to_hex(sha3);
+// sha3_hex == "38e05c33d7b067127f217d8c856e554fcff09c9320b8a5979ce2ff5d95dd27ba35d1fba50c562dfd1d6cc48bc9c5baa4390894418cc942d968f97bcb659419ed"
+```
+
 ## Choosing an Algorithm
 
 - Use `CRC32` for fast corruption checks.
@@ -215,7 +287,11 @@ auto const sha2_hex = to_hex(sha2);
 - Use `SHA2-224` when you want the smallest SHA2-family digest.
 - Use `SHA2-256` as a good general-purpose modern cryptographic hash.
 - Use `SHA2-384` when you want a larger digest without going all the way to SHA2-512.
-- Use `SHA2-512` when you need a modern cryptographic hash from this library.
+- Use `SHA2-512` when you need a strong SHA2 hash with a 512-bit digest.
+- Use `SHA3-224` when you want the smallest SHA3-family digest.
+- Use `SHA3-256` as an alternative to SHA2-256 based on a structurally different algorithm.
+- Use `SHA3-384` when you want a larger SHA3 digest without the full 512-bit overhead.
+- Use `SHA3-512` when you need the strongest hash in this library, or want algorithm diversity alongside SHA2-512.
 
 ## Contributing
 
