@@ -3,7 +3,7 @@ from conan.tools.cmake import cmake_layout, CMakeToolchain, CMakeDeps, CMake
 
 class hash23(ConanFile):
     name = "hash23"
-    version = "1.4"
+    version = "1.5"
 
     license = "MIT"
     author = "Rene Windegger <rene@windegger.wtf>"
