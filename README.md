@@ -224,7 +224,7 @@ SHA3-224 is the shortest SHA3 variant provided by `hash23`. It uses the Keccak s
 
 auto const sha3 = hash23::sha3_224::calculate("Hello, World!");
 auto const sha3_hex = to_hex(sha3);
-// sha3_hex == "853048fb8b11462b6100385633c0cc8dcddc6e2b8e376c28102bc84f2"
+// sha3_hex == "853048fb8b11462b6100385633c0cc8dcddc6e2b8e376c28102bc84f"
 ```
 
 ### SHA3-256
