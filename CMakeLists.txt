@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(hash23 LANGUAGES C CXX VERSION 1.4)
+project(hash23 LANGUAGES C CXX VERSION 1.5)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
