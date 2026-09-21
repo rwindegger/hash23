@@ -1,6 +1,6 @@
 # hash23
 [![codecov](https://codecov.io/gh/rwindegger/hash23/graph/badge.svg?token=Q8EMA6ONYM)](https://codecov.io/gh/rwindegger/hash23)
-[![covdbg](https://covdbg.com/badge.svg/)](https://covdbg.com/)
+[![covdbg - Windows coverage for C++](https://covdbg.com/badge.svg/)](https://covdbg.com/)
 
 A compact C++ hashing library with a simple `calculate(...)` API for checksums, non-cryptographic hashes, and cryptographic digests.
 
